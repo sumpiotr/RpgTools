@@ -5,12 +5,15 @@ using UnityEngine;
 public class CharacterScriptableObject : ScriptableObject
 {
     public string Name;
+    public Sprite Sprite;
     public int Health;
     public int Energy;
     public int Attack;
     public int Defense;
     public int Speed;
     public int CriticalRate;
+
+    public DamageTypeEnum baseAttackType;
 
     public List<ActionBaseScriptableObject> Skills;
 }

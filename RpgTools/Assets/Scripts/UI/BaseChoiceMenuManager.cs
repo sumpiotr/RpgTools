@@ -95,8 +95,8 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
 
     public virtual void Unfocus()
     {
-        selected = null;
         selected.DeSelect();
+        selected = null;
         collumnIndex = 0;
     }
 

@@ -8,10 +8,16 @@ public class InputManager : MonoBehaviour
 
     private PlayerInput _playerInput;
 
-    private void Start()
+    private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
         changeMapInputEvent.AddEvent(ChangeMapping);
+    }
+
+
+    private void Start()
+    {
+       
     }
 
     private void ChangeMapping(string name)

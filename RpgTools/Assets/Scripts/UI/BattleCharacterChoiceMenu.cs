@@ -12,8 +12,12 @@ public class BattleCharacterChoiceMenu : BaseChoiceMenuManager<CharacterChoiceDa
         ((BattleCharacterChoice)_choices[index]).UpdateEnergy(value);
     }
 
-    public void UpdateChoiceInitiative(int index, int value)
+    public void UpdateChoicesInitiative(float value)
     {
-        ((BattleCharacterChoice)_choices[index]).UpdateInitiative(value);
+        foreach (var choice in _choices) 
+        {
+            ((BattleCharacterChoice)choice).UpdateInitiative(value);
+        }
+      
     }
 }

@@ -985,6 +985,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selection: {fileID: 818478528453840223}
   Index: 0
+  image: {fileID: 8759257438415089946}
   healthSlider: {fileID: 817914271036916906}
   energySlider: {fileID: 8476373722743321829}
   initiativeSlider: {fileID: 3797526438695734733}

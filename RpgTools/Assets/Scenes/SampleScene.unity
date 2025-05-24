@@ -249,10 +249,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 963569008}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 80.37899, y: -111.77488}
+  m_SizeDelta: {x: 160.75798, y: 223.54976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &186254656
 MonoBehaviour:
@@ -500,6 +500,59 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &401412428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 401412429}
+  - component: {fileID: 401412430}
+  m_Layer: 0
+  m_Name: BattleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &401412429
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401412428}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1760964313}
+  - {fileID: 2021366030}
+  m_Father: {fileID: 1383819071}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &401412430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401412428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915e37a8d4e4f0f4a8ef95ef94c86e45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  changeInputMapEvent: {fileID: 11400000, guid: 39aa4e43f81a89e4882fce9ca30d445d, type: 2}
+  battleUI: {fileID: 1248561191}
+  playerTurnManager: {fileID: 1760964314}
+  characterDisplayManager: {fileID: 2021366031}
+  encouter: {fileID: 11400000, guid: 1ea0ab4925e26ca4db29ca0fb5a1be78, type: 2}
+  playerlist:
+  - {fileID: 11400000, guid: 157bbae6380be834fa7d3f74566b736d, type: 2}
 --- !u!1 &425954757
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,10 +967,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 344466956}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 593.56805, y: -50.139004}
+  m_SizeDelta: {x: 395.71204, y: 100.27801}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &652659042
 MonoBehaviour:
@@ -1400,7 +1453,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1248561192
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1510,6 +1563,7 @@ Transform:
   - {fileID: 1747486455}
   - {fileID: 754407218}
   - {fileID: 425954758}
+  - {fileID: 401412429}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1422631870
@@ -1543,10 +1597,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 344466956}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 197.85602, y: -50.139004}
+  m_SizeDelta: {x: 395.71204, y: 100.27801}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1422631872
 MonoBehaviour:
@@ -2031,10 +2085,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 963569008}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 241.13696, y: -111.77488}
+  m_SizeDelta: {x: 160.75798, y: 223.54976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1686599978
 MonoBehaviour:
@@ -2189,15 +2243,87 @@ MonoBehaviour:
     m_ActionId: 90491370-b129-43d2-837e-3795fb74fd07
     m_ActionName: 'Dialog/UiMove[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1760964314}
+        m_TargetAssemblyTypeName: PlayerTurnMenuManager, Assembly-CSharp
+        m_MethodName: OnConfirmButtonClicked
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2021366031}
+        m_TargetAssemblyTypeName: BattleCharacterDisplayManager, Assembly-CSharp
+        m_MethodName: OnConfirm
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: a96ed717-4f8c-4be4-aeb0-ae33a6a90fb8
     m_ActionName: 'Battle/Confirm[/Keyboard/space]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1760964314}
+        m_TargetAssemblyTypeName: PlayerTurnMenuManager, Assembly-CSharp
+        m_MethodName: SelectionMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2021366031}
+        m_TargetAssemblyTypeName: BattleCharacterDisplayManager, Assembly-CSharp
+        m_MethodName: OnSelectionMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 4486d9da-5d6c-48bf-aea5-a72dde364b91
     m_ActionName: 'Battle/UiMove[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1760964314}
+        m_TargetAssemblyTypeName: PlayerTurnMenuManager, Assembly-CSharp
+        m_MethodName: OnCancelButtonClicked
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2021366031}
+        m_TargetAssemblyTypeName: BattleCharacterDisplayManager, Assembly-CSharp
+        m_MethodName: OnCancel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 5c618290-308b-4056-a66f-20f35add2bb2
     m_ActionName: 'Battle/Cancel[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
@@ -2218,6 +2344,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changeMapInputEvent: {fileID: 11400000, guid: 39aa4e43f81a89e4882fce9ca30d445d, type: 2}
+--- !u!1 &1760964312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1760964313}
+  - component: {fileID: 1760964314}
+  m_Layer: 0
+  m_Name: PlayerMenuManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1760964313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760964312}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 401412429}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1760964314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760964312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ea67a278f2b5e743962506e88f3cb3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battleChoiceMenuManager: {fileID: 242682976}
 --- !u!1 &1820848740
 GameObject:
   m_ObjectHideFlags: 0
@@ -2569,6 +2740,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1963693176}
   m_CullTransparentMesh: 1
+--- !u!1 &2021366029
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2021366030}
+  - component: {fileID: 2021366031}
+  m_Layer: 0
+  m_Name: CharacterDisplayManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2021366030
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021366029}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 401412429}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2021366031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021366029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4ccfc4f6179f945ab23a0d3811c6f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDisplay: {fileID: 1268620751}
+  enemyDisplay: {fileID: 963569010}
 --- !u!1 &2045950041
 GameObject:
   m_ObjectHideFlags: 0

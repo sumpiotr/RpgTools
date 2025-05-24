@@ -5,6 +5,9 @@ using UnityEngine.UI;
 public class BattleCharacterChoice : BaseChoiceMenu<CharacterChoiceData>
 {
     private CharacterChoiceData _characterData;
+    
+    [SerializeField]
+    private Image image;
 
     [SerializeField]
     private Slider healthSlider;
@@ -34,13 +37,15 @@ public class BattleCharacterChoice : BaseChoiceMenu<CharacterChoiceData>
 
     public void UpdateInitiative(float newValue)
     {
-       CurrentInitiativeValue = newValue;
+       CurrentInitiativeValue += newValue;
        initiativeSlider.value = CurrentInitiativeValue / _characterData.Speed;
     }
 
     public override void LoadData(CharacterChoiceData data)
     {
+        _characterData = data;
         images.SetActive(true);
+        image.sprite = data.Sprite;
         _characterData = data;
         energySlider.gameObject.SetActive(_characterData.Player);
         healthSlider.value = 1;
@@ -72,13 +77,15 @@ public struct CharacterChoiceData
 
     public bool Player;
 
+    public Sprite Sprite;
     public int MaxHealth;
     public float Speed;
     public int MaxEnergy;
 
-    public CharacterChoiceData(bool player, int maxHealth, float speed, int maxEnergy)
+    public CharacterChoiceData(bool player, Sprite sprite, int maxHealth, float speed, int maxEnergy)
     {
         Player = player;
+        Sprite = sprite;
         MaxHealth = maxHealth;
         Speed = speed;
         MaxEnergy = maxEnergy;

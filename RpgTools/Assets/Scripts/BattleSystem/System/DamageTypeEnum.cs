@@ -10,5 +10,4 @@ public enum DamageTypeEnum
    Electricity,
    Water,
    Energy
-
 }

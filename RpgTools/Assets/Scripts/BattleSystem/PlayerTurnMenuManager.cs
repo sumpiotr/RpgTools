@@ -19,18 +19,22 @@ public class PlayerTurnMenuManager : MonoBehaviour
 
     private Queue<Menu> _menuQueue;
 
-    private Action<ActionBaseScriptableObject> _onActionChoosen;
+    private Action<PlayerActionTypeEnum, ActionBaseScriptableObject> _onActionChoosen;
 
     private void Start()
     {
+        _menuQueue = new Queue<Menu>();
         _mainMenu = new Dictionary<string, Action>();
         _mainMenu.Add("Attack", () =>
         {
-
+            _onActionChoosen(PlayerActionTypeEnum.BaseAttack, null);
         });
         _mainMenu.Add("Skill", () => { SetupMenu(_skillsMenu); });
         _mainMenu.Add("Use Item", ShowItemMenu);
-        _mainMenu.Add("Defense", ChooseDefense);
+        _mainMenu.Add("Guard", () =>
+        {
+            _onActionChoosen.Invoke(PlayerActionTypeEnum.Guard, null);
+        });
     }
 
     #region Input Controls
@@ -43,7 +47,7 @@ public class PlayerTurnMenuManager : MonoBehaviour
     public void OnConfirmButtonClicked(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        _menuQueue.First().onMenuItemConfirmed(battleChoiceMenuManager.GetSelectedChoice());
+        _menuQueue.Last().onMenuItemConfirmed(battleChoiceMenuManager.GetSelectedChoice());
     }
 
     public void OnCancelButtonClicked(InputAction.CallbackContext context)
@@ -56,19 +60,23 @@ public class PlayerTurnMenuManager : MonoBehaviour
 
     #endregion
 
-    public void LoadMenus(CharacterScriptableObject characterData, Action<ActionBaseScriptableObject> onActionChoosen)
+    public void LoadMenus(CharacterScriptableObject characterData, Action<PlayerActionTypeEnum, ActionBaseScriptableObject> onActionChoosen)
     {
+        battleChoiceMenuManager.gameObject.SetActive(true);
         _currentCharacterData = characterData;
         _onActionChoosen = onActionChoosen;
+        _onActionChoosen += (PlayerActionTypeEnum p, ActionBaseScriptableObject a) => {
+            UnloadMenu();
+        };
         battleChoiceMenuManager.SetTitle(characterData.Name);
         List<string> attackNames = new List<string>();
-        foreach (AttackScriptableObject attack in _currentCharacterData.Skills)
+        foreach (ActionBaseScriptableObject skill in _currentCharacterData.Skills)
         {
-            attackNames.Add(attack.Name);
+            attackNames.Add(skill.Name);
         }
         _skillsMenu = new Menu(attackNames, (BaseChoiceMenu<string> x) =>
         {
-            _onActionChoosen(_currentCharacterData.Skills[x.Index]);
+            _onActionChoosen(PlayerActionTypeEnum.Skill, _currentCharacterData.Skills[x.Index]);
         });
 
         SetupMenu(new Menu(_mainMenu.Keys.ToList(), (BaseChoiceMenu<string> x) => { _mainMenu[x.GetData()].Invoke(); }));
@@ -86,10 +94,13 @@ public class PlayerTurnMenuManager : MonoBehaviour
 
     }
 
-    private void ChooseDefense()
+    private void UnloadMenu()
     {
-
+        battleChoiceMenuManager.gameObject.SetActive(false);
+        battleChoiceMenuManager.Unfocus();
+        _menuQueue.Clear();
     }
+
 }
 
 struct Menu 

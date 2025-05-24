@@ -10,13 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1aa70c1954a138f47afe30f9755a2968, type: 3}
-  m_Name: Earth Worm
+  m_Name: EarthWorm
   m_EditorClassIdentifier: 
-  Health: 36
+  Name: Earth Worm
+  Sprite: {fileID: 5504296669712553928, guid: 0babb78c74ca56c49847399892ebc839, type: 3}
+  Health: 40
+  Energy: 0
   Attack: 10
   Defense: 5
   Speed: 8
-  CriticalRate: 0
-  skills: []
+  CriticalRate: 10
+  baseAttackType: 4
+  Skills:
+  - {fileID: 11400000, guid: 20cf7a9e92887fc4fb2d8066d027767a, type: 2}
+  - {fileID: 11400000, guid: 987956976bebd9944aa5640f47b72239, type: 2}
   weaknesses: 
   resistances: 
