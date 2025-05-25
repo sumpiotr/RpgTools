@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : Character
@@ -32,5 +33,19 @@ public class Enemy : Character
         base.TakeDamage(attackDamage, damageType, effectChance);
     }
 
-   
+    protected override void ChooseTargetAlly(ActionBaseScriptableObject action, List<Character> allies)
+    {
+        List<Character> list = new List<Character>();
+        list.Add(allies[Random.Range(0, allies.Count - 1)]);
+        ResolveAction(action, list);
+    }
+
+    protected override void ChooseTargetEnemy(ActionBaseScriptableObject action, List<Character> enemies)
+    {
+        List<Character> list = new List<Character>();
+        list.Add(enemies[Random.Range(0, enemies.Count - 1)]);
+        ResolveAction(action, list);
+    }
+
+
 }

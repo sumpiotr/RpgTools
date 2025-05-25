@@ -96,7 +96,7 @@ public class PlayerTurnMenuManager : MonoBehaviour
 
     private void UnloadMenu()
     {
-        battleChoiceMenuManager.gameObject.SetActive(false);
+        //battleChoiceMenuManager.gameObject.SetActive(false);
         battleChoiceMenuManager.Unfocus();
         _menuQueue.Clear();
     }

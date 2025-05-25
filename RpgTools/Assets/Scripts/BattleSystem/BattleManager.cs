@@ -18,7 +18,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField]
     private BattleCharacterDisplayManager characterDisplayManager;
 
-    private const float tickValue = 0.2f;
+    private const float tickValue = 0.1f;
     private IEnumerator updateCoroutine;
 
     private List<Enemy> _enemyList;
@@ -44,6 +44,11 @@ public class BattleManager : MonoBehaviour
             for (int i = 0; i < encounterMonster.amount; i++) enemies.Add(encounterMonster.enemyData);
         }
         foreach (CharacterScriptableObject data in playerlist) characters.Add(new PlayerCharacter(data));
+
+        foreach(PlayerCharacter character in characters)
+        {
+            character.SetChooseTarget(ChooseTarget);
+        }
         LoadBattle(enemies, characters);
     }
 
@@ -53,7 +58,9 @@ public class BattleManager : MonoBehaviour
         _enemyList = new List<Enemy>();
         foreach (EnemyScriptableObject enemy in enemies) 
         {
-            _enemyList.Add(new Enemy(enemy));
+            Enemy e = new Enemy(enemy);
+            _enemyList.Add(e);
+
         }
         _playerList = characters;
 
@@ -107,6 +114,7 @@ public class BattleManager : MonoBehaviour
     {
         if (_playerTurnQueue.Count == 0)
         {
+            updateCoroutine = UpdateBattle();
             StartCoroutine(updateCoroutine);
             return;
         }
@@ -136,53 +144,7 @@ public class BattleManager : MonoBehaviour
         }
         else if (actionType == PlayerActionTypeEnum.Skill) 
         {
-            Action<bool, int> onTargetSelected = (bool a, int b) => { };
-            if (action.GetType() == typeof(BuffScriptableObject)) 
-            {
-                BuffScriptableObject buff = (BuffScriptableObject)action;
-                onTargetSelected = (bool player, int index) =>
-                {
-                    if (player) _playerList[index].Boost(buff.Amount, buff.Duration, buff.Stat);
-                    else _enemyList[index].Boost(buff.Amount, buff.Duration, buff.Stat);
-                };
-            }
-            else if(action.GetType() == typeof(AttackScriptableObject))
-            {
-                AttackScriptableObject attack = (AttackScriptableObject)action;
-                onTargetSelected = (bool isPlayer, int index) =>
-                {
-                    if (isPlayer) player.Attack(_playerList[index], attack.DamageType, attack.effectChance);
-                    else player.Attack(_enemyList[index], attack.DamageType, attack.effectChance);
-                };
-            }
-
-            if (action.TargetTypeEnum == TargetTypeEnum.Single)
-            {
-                ChooseTarget(player, action.Target == TargetEnum.Allies, (int index) =>
-                {
-                    onTargetSelected(action.Target == TargetEnum.Allies, index);
-                    EndPlayerTurn(player);
-                });
-            }
-            else if (action.TargetTypeEnum == TargetTypeEnum.Multi)
-            {
-                if (action.Target == TargetEnum.Allies)
-                {
-                    for (int i = 0; i < _playerList.Count; i++) onTargetSelected(true, i);
-                    EndPlayerTurn(player);
-                }
-                else
-                {
-                    for (int i = 0; i < _enemyList.Count; i++) onTargetSelected(false, i);
-                    EndPlayerTurn(player);
-                }
-            }
-            else
-            {
-                onTargetSelected(true, _playerList.IndexOf(player));
-                EndPlayerTurn(player);
-            }
-
+           player.ChooseTargetAndResolveAction(action, _playerList.Select(x=>(Character)x).ToList(), _enemyList.Select(x => (Character)x).ToList(), ResolvePlayerTurnQueue);
         }
     }
 
@@ -194,8 +156,10 @@ public class BattleManager : MonoBehaviour
 
     private void ChooseTarget(PlayerCharacter currentPlayer, bool player, Action<int> onChoosen) 
     {
+        changeInputMapEvent.CallEvent("CharacterSelection");
         characterDisplayManager.ChoiceCharacter(player, (int index) =>
         {
+            changeInputMapEvent.CallEvent("Battle");
             if (index == -1) LoadPlayerMenu(currentPlayer);
             else
             {

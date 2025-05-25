@@ -12,7 +12,6 @@ public class BattleCharacterDisplayManager : MonoBehaviour
     [SerializeField]
     private BattleCharacterChoiceMenu enemyDisplay;
 
-    private bool _chooseActive = false;
     private bool _playerChoose = false;
 
     private Action<int> _onChoosen;
@@ -61,7 +60,6 @@ public class BattleCharacterDisplayManager : MonoBehaviour
 
     public void ChoiceCharacter(bool player, Action<int> onChoosen)
     {
-        _chooseActive = true;
         _playerChoose = player;
         _onChoosen = onChoosen;
         if (player) playerDisplay.Focus();
@@ -73,25 +71,22 @@ public class BattleCharacterDisplayManager : MonoBehaviour
     public void OnCancel(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if (!_chooseActive) return;
         if (_playerChoose) playerDisplay.Unfocus();
         else enemyDisplay.Unfocus();
         _onChoosen.Invoke(-1);
-        _chooseActive = false;
     }
 
     public void OnConfirm(InputAction.CallbackContext context)
     {
         if(!context.performed) return;
-        if (!_chooseActive) return;
         _onChoosen.Invoke(_playerChoose ? playerDisplay.GetSelectedIndex() : enemyDisplay.GetSelectedIndex());
-        _chooseActive = false;
+        if (_playerChoose) playerDisplay.Unfocus();
+        else enemyDisplay.Unfocus();
     }
 
     public void OnSelectionMove(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if (!_chooseActive) return;
         if (_playerChoose) playerDisplay.SelectionMove(context);
         else enemyDisplay.SelectionMove(context);
     }

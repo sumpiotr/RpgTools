@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: EarthWorm
   m_EditorClassIdentifier: 
   Name: Earth Worm
-  Sprite: {fileID: 5504296669712553928, guid: 0babb78c74ca56c49847399892ebc839, type: 3}
+  Sprite: {fileID: 21300000, guid: 00dd85e91fc17a14c8e3bd52046706d0, type: 3}
   Health: 40
   Energy: 0
   Attack: 10
   Defense: 5
-  Speed: 8
+  Speed: 4
   CriticalRate: 10
   baseAttackType: 4
   Skills:

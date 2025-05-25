@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Character
 {
     protected CharacterScriptableObject _characterData;
+
+    protected Action _onActionResolved;
+
+    private Action _onHealthChange;
 
 
     private Dictionary<CharacterStatsEnum, int> _currentStats;
@@ -60,11 +65,17 @@ public class Character
         _boofsValues[CharacterStatsEnum.CriticalRate] = 0;
     }
 
+    public void AddHealthListener(Action onHealthChange)
+    {
+        _onHealthChange += onHealthChange;
+    }
+
     public virtual void TakeDamage(int attackDamage, DamageTypeEnum damageType, int effectChance)
     {
         int totalDamae = attackDamage - _currentStats[CharacterStatsEnum.Defense] - _boofsValues[CharacterStatsEnum.Defense];
         attackDamage = Mathf.Max(minDamage, totalDamae);
         _currentStats[CharacterStatsEnum.Health] -= attackDamage;
+        _onHealthChange.Invoke();
     }
 
 
@@ -101,6 +112,7 @@ public class Character
 
     public void EndTurn()
     {
+        _initiative = 0;
         CheckBoofs();
         CheckEffects();
     }
@@ -149,4 +161,60 @@ public class Character
     {
         return (int)Mathf.Ceil(multiplier * ((float)value));
     }
+
+    public void ChooseTargetAndResolveAction(ActionBaseScriptableObject action, List<Character> allies, List<Character> enemies, Action onResolved)
+    {
+        _onActionResolved = onResolved;
+        List<Character> targets = new List<Character>();
+        if (action.TargetTypeEnum == TargetTypeEnum.Self)
+        {
+            targets.Add(this);
+            ResolveAction(action, targets);
+        }
+        else if (action.TargetTypeEnum == TargetTypeEnum.Multi)
+        {
+            if (action.Target == TargetEnum.Enemies)ResolveAction(action, enemies);
+            else ResolveAction(action, allies);
+        }
+        else
+        {
+            if (action.Target == TargetEnum.Enemies) ChooseTargetEnemy(action, enemies);
+            else ChooseTargetAlly(action, allies);
+        }
+    }
+
+    protected virtual void ChooseTargetEnemy(ActionBaseScriptableObject action, List<Character> enemies)
+    {
+
+    }
+
+    protected virtual void ChooseTargetAlly(ActionBaseScriptableObject action, List<Character> allies)
+    {
+
+    }
+
+    public void ResolveAction(ActionBaseScriptableObject action, List<Character> targets)
+    {
+        if (action.GetType() == typeof(BuffScriptableObject))
+        {
+            BuffScriptableObject buff = (BuffScriptableObject)action;
+            foreach (Character target in targets)
+            {
+                target.Boost(buff.Amount, buff.Duration, buff.Stat);
+            }
+        }
+        else if (action.GetType() == typeof(AttackScriptableObject))
+        {
+            AttackScriptableObject attack = (AttackScriptableObject)action;
+            foreach(Character target in targets) 
+            {
+                Attack(target, attack.DamageType, attack.effectChance);
+            }
+        }
+
+        EndTurn();
+        _onActionResolved.Invoke();
+    }
+
+
 }
