@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Energy Blade
   m_EditorClassIdentifier: 
   Name: Ostrze Energi
+  Description: Zaatakuj plazmowym ostrzem. Pomija obrone
+  Cost: 0
   Target: 1
   TargetTypeEnum: 0
   DamageType: 7

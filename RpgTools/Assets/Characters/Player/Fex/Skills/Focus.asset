@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Focus
   m_EditorClassIdentifier: 
   Name: "Skup si\u0119"
+  Description: "Skup sie i zregeneruj troche \u017Cycia"
+  Cost: 0
   Target: 0
   TargetTypeEnum: 2
   Stat: 0

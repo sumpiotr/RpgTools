@@ -84,6 +84,7 @@ public class Character
         if(type == CharacterStatsEnum.Health || type == CharacterStatsEnum.Energy)
         {
             _currentStats[type] += amount;
+            _onHealthChange();
         }
         else
         {

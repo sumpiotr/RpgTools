@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Earth Shield
   m_EditorClassIdentifier: 
   Name: Ziemista tarcza
+  Description: 
+  Cost: 4
   Target: 0
   TargetTypeEnum: 2
   Stat: 4

@@ -1,0 +1,2 @@
+VAR message = "test"
+{message}

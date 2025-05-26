@@ -7,6 +7,7 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEditor.Rendering;
+using System;
 
 public class DialogManager : MonoBehaviour
 {
@@ -14,12 +15,23 @@ public class DialogManager : MonoBehaviour
     #region EventListeners 
     [Header("Event Listeners")]
     [SerializeField]
+    private ActionEventScriptableObject setDialogEndCallbackEvent;
+
+    [SerializeField]
     private StringEventScriptableObject startDialogEvent;
+
+    [SerializeField]
+    private StringEventScriptableObject showSimpleMessage;
 
     [SerializeField]
     private StringEventScriptableObject changeInputMapEvent;
 
     #endregion
+
+    [SerializeField]
+    private TextAsset simpleMessage;
+
+    private Action onDialogEnded;
 
     #region UI variables
     [Header("Dialog UI")]
@@ -51,6 +63,8 @@ public class DialogManager : MonoBehaviour
     void Start()
     {
         startDialogEvent.AddEvent(StartDialog);
+        showSimpleMessage.AddEvent(ShowSimpleMessage);
+        setDialogEndCallbackEvent.AddEvent((Action action) => { onDialogEnded = action; });
         dialogText.gameObject.SetActive(true);
         dialogUI.SetActive(false);
         dialogChoicesManager.gameObject.SetActive(false);
@@ -60,10 +74,30 @@ public class DialogManager : MonoBehaviour
     {
         if (_currentStory != null) return;
 
+
         changeInputMapEvent.CallEvent("Dialog");
         dialogUI.SetActive(true);
 
         _currentStory = new Story(data);
+        SetFunctions(_currentStory.globalTags);
+        ContinueDialog();
+    }
+
+    private void ShowSimpleMessage(string message)
+    {
+        Story story = new Story(simpleMessage.text);
+        story.variablesState["message"] = message;
+        StartDialog(story);
+    }
+
+    private void StartDialog(Story story)
+    {
+        if (_currentStory != null) return;
+
+        changeInputMapEvent.CallEvent("Dialog");
+        dialogUI.SetActive(true);
+
+        _currentStory = story;
         SetFunctions(_currentStory.globalTags);
         ContinueDialog();
     }
@@ -131,6 +165,11 @@ public class DialogManager : MonoBehaviour
         _currentStory = null;
         dialogUI.SetActive(false);
         changeInputMapEvent.CallEvent("Player");
+        if(onDialogEnded != null)
+        {
+            onDialogEnded();
+            //onDialogEnded = null;
+        }
     }
 
 

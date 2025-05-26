@@ -9,14 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54f92211071a2c4c9e5f8c529e3fd12, type: 3}
-  m_Name: Aim
+  m_Script: {fileID: 11500000, guid: 0fbf610a73baaab46a143bc87b700d99, type: 3}
+  m_Name: ShowBattleHint
   m_EditorClassIdentifier: 
-  Name: Przyceluj
-  Description: "Przyceluj aby zwi\u0119kszy\u0107 szanse na crita"
-  Cost: 0
-  Target: 0
-  TargetTypeEnum: 2
-  Stat: 4
-  Amount: 20
-  Duration: 5

@@ -1,3 +1,4 @@
+using Ink.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,12 @@ public class BattleManager : MonoBehaviour
 {
     [SerializeField]
     private StringEventScriptableObject changeInputMapEvent;
+
+    [SerializeField]
+    private StringEventScriptableObject displayMessage;
+
+    [SerializeField]
+    private ActionEventScriptableObject setDialogCallbackEvent;
 
     [SerializeField]
     private GameObject battleUI;
@@ -37,32 +44,64 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        List<EnemyScriptableObject> enemies = new List<EnemyScriptableObject> ();
         List< PlayerCharacter > characters = new List<PlayerCharacter> ();
-        foreach(EncounterMonster encounterMonster in encouter.EnemyList)
-        {
-            for (int i = 0; i < encounterMonster.amount; i++) enemies.Add(encounterMonster.enemyData);
-        }
+     
         foreach (CharacterScriptableObject data in playerlist) characters.Add(new PlayerCharacter(data));
 
         foreach(PlayerCharacter character in characters)
         {
             character.SetChooseTarget(ChooseTarget);
         }
-        LoadBattle(enemies, characters);
+        LoadBattle(encouter, characters);
     }
 
-    public void LoadBattle(List<EnemyScriptableObject> enemies, List<PlayerCharacter> characters)
+    private void DisplayBattleMessage(string message, Action onMessageEnded)
+    {
+        playerTurnManager.DisableMenu();
+
+        setDialogCallbackEvent.CallEvent(()=> {
+            playerTurnManager.EnableMenu();
+            changeInputMapEvent.CallEvent("battle");
+            onMessageEnded();
+            });
+
+        displayMessage.CallEvent(message);    
+    }
+
+    public void LoadBattle(EncounterScriptableObject encounter, List<PlayerCharacter> characters)
     {
         battleUI.SetActive(true);
         _enemyList = new List<Enemy>();
-        foreach (EnemyScriptableObject enemy in enemies) 
-        {
-            Enemy e = new Enemy(enemy);
-            _enemyList.Add(e);
 
+        foreach (EncounterMonster encounterMonster in encouter.EnemyList)
+        {
+            for (int i = 0; i < encounterMonster.amount; i++)
+            {
+                Enemy enemy = new Enemy(encounterMonster.enemyData);
+                if (encounterMonster.amount > 1) enemy.Name = $"{encounterMonster.enemyData.Name} {i+1}";
+                else enemy.Name = encounterMonster.enemyData.Name;
+                _enemyList.Add(enemy); 
+            }
+        }
+
+        for (int i = 0; i < _enemyList.Count; i++) 
+        {
+            int index = i;
+            _enemyList[i].AddHealthListener(() =>
+            {
+                characterDisplayManager.UpdateHealth(false, index, _enemyList[index].GetCurrentStatValue(CharacterStatsEnum.Health));
+            });
         }
         _playerList = characters;
+
+        for (int i = 0; i < _playerList.Count; i++) 
+        {
+            int index = i;
+            _playerList[i].AddHealthListener(() =>
+            {
+                characterDisplayManager.UpdateHealth(true, index, _playerList[index].GetCurrentStatValue(CharacterStatsEnum.Health));
+            });
+        }
 
          characterDisplayManager.LoadPlayers(characters);
         characterDisplayManager.LoadEnemies(_enemyList);
@@ -76,13 +115,9 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(updateCoroutine);
     }
 
-    public void Update()
-    {
-    }
-
     public IEnumerator UpdateBattle()
     {
-        while (true) 
+        while (_playerTurnQueue.Count == 0 && _enemyTurnQueue.Count == 0) 
         {
             yield return new WaitForSeconds(tickValue);
 
@@ -99,27 +134,54 @@ public class BattleManager : MonoBehaviour
 
 
             characterDisplayManager.UpdateInitiative(tickValue);
-            if (_playerTurnQueue.Count > 0 || _enemyTurnQueue.Count > 0)
-            {
-                ResolvePlayerTurnQueue();
-                break;
-            }
         }
-        
-
+        ResolveTurns();
     }
 
-
-    private void ResolvePlayerTurnQueue()
+    private void ResolveTurns()
     {
-        if (_playerTurnQueue.Count == 0)
+        if(_playerTurnQueue.Count > 0) 
+        {
+            ResolvePlayerTurnQueue();
+        }
+        else if(_enemyTurnQueue.Count > 0)
+        {
+            ResolveEnemyQueue();
+        }
+        else
         {
             updateCoroutine = UpdateBattle();
             StartCoroutine(updateCoroutine);
-            return;
         }
+    }
+
+    private void ResolvePlayerTurnQueue()
+    {
+        if (_playerTurnQueue.Count == 0)return;
+        
         PlayerCharacter currentCharacter = _playerTurnQueue.Dequeue();
         LoadPlayerMenu(currentCharacter);
+    }
+
+    private void ResolveEnemyQueue()
+    {
+        Enemy enemy = _enemyTurnQueue.Dequeue();
+        ActionBaseScriptableObject action = enemy.ChooseAction();
+        if (action == null)
+        {
+            DisplayBattleMessage(enemy.Name + " odpoczywa", EndEnemyTurn);
+            return;
+        }
+
+        DisplayBattleMessage($"{enemy.Name} u¿ywa {action.Name}", () =>
+        {
+            enemy.ChooseTargetAndResolveAction(action, _enemyList.Select(x => (Character)x).ToList(), _playerList.Select(x => (Character)x).ToList(), EndEnemyTurn);
+        });
+    }
+
+    private void EndEnemyTurn()
+    {
+        ResolveTurns();
     }
 
     private void LoadPlayerMenu(PlayerCharacter player)
@@ -144,14 +206,14 @@ public class BattleManager : MonoBehaviour
         }
         else if (actionType == PlayerActionTypeEnum.Skill) 
         {
-           player.ChooseTargetAndResolveAction(action, _playerList.Select(x=>(Character)x).ToList(), _enemyList.Select(x => (Character)x).ToList(), ResolvePlayerTurnQueue);
+            player.ChooseTargetAndResolveAction(action, _playerList.Select(x => (Character)x).ToList(), _enemyList.Select(x => (Character)x).ToList(), ResolveTurns);
         }
     }
 
     private void EndPlayerTurn(PlayerCharacter player) 
     {
         player.EndTurn();
-        ResolvePlayerTurnQueue();
+        ResolveTurns();
     }
 
     private void ChooseTarget(PlayerCharacter currentPlayer, bool player, Action<int> onChoosen) 

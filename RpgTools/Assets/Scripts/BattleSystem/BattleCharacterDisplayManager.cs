@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class BattleCharacterDisplayManager : MonoBehaviour
 {
+    [SerializeField]
+    private StringEventScriptableObject showBattleHintEvent;
 
     [SerializeField]
     private BattleCharacterChoiceMenu playerDisplay;
@@ -16,12 +18,30 @@ public class BattleCharacterDisplayManager : MonoBehaviour
 
     private Action<int> _onChoosen;
 
+    private void Start()
+    {
+        enemyDisplay.SetOnHover(ShowEnemyInfo);
+        playerDisplay.SetOnHover(ShowPlayerInfo);
+    }
+
+    private void ShowPlayerInfo(int index)
+    {
+        if (index == -1) showBattleHintEvent.CallEvent("");
+        else showBattleHintEvent.CallEvent(playerDisplay.GetChoiceDataByIndex(index).Name);
+    }
+
+    private void ShowEnemyInfo(int index)
+    {
+        if (index == -1) showBattleHintEvent.CallEvent("");
+        else showBattleHintEvent.CallEvent(enemyDisplay.GetChoiceDataByIndex(index).Name);
+    }
+
     public void LoadEnemies(List<Enemy> data)
     {
         List<CharacterChoiceData> choiceData = new List<CharacterChoiceData>();
-        foreach (Character character in data) 
+        foreach (Enemy enemy in data) 
         {
-            choiceData.Add(new CharacterChoiceData(false, character.GetCharacterData().Sprite, character.GetCharacterData().Health, character.GetCharacterData().Speed, 1)); 
+            choiceData.Add(new CharacterChoiceData(false, enemy.Name, enemy.GetCharacterData().Sprite, enemy.GetCharacterData().Health, enemy.GetCharacterData().Speed, 1)); 
         }
         enemyDisplay.LoadChoices(choiceData);
     }
@@ -31,7 +51,7 @@ public class BattleCharacterDisplayManager : MonoBehaviour
         List<CharacterChoiceData> choiceData = new List<CharacterChoiceData>();
         foreach (Character character in data)
         {
-            choiceData.Add(new CharacterChoiceData(true, character.GetCharacterData().Sprite, character.GetCharacterData().Health, character.GetCharacterData().Speed, character.GetCharacterData().Energy));
+            choiceData.Add(new CharacterChoiceData(true, character.GetCharacterData().Name, character.GetCharacterData().Sprite, character.GetCharacterData().Health, character.GetCharacterData().Speed, character.GetCharacterData().Energy));
         }
         playerDisplay.LoadChoices(choiceData);
         for (int i = 0; i < data.Count; i++) 

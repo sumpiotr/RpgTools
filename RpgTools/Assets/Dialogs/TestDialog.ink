@@ -1,11 +1,13 @@
 EXTERNAL SetPortrait(name)
 #using SetPortrait
+VAR myNumber = "Rockchard"
+
 ->main
 
 ==main==
 ~SetPortrait("rock")
 Hello there!
-I am Rock!!!
+I am {myNumber}!!!
 Now I'm goig to give you a choice!
 ->importantChoices
 

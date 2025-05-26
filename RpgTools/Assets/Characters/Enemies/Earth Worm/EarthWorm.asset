@@ -18,7 +18,7 @@ MonoBehaviour:
   Energy: 0
   Attack: 10
   Defense: 5
-  Speed: 4
+  Speed: 3
   CriticalRate: 10
   baseAttackType: 4
   Skills:

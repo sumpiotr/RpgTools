@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -22,6 +23,9 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
     protected List<T> _dataChoices;
 
     protected BaseChoiceMenu<T> selected;
+
+
+    private Action<int> onHover;
 
     protected int collumnIndex = 0;
 
@@ -69,6 +73,28 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
         LoadData();
     }
 
+    public void SetOnHover(Action<int> onHover)
+    {
+        this.onHover = onHover;
+    }
+
+    public void HideChoices()
+    {
+        foreach(var choice in _choices)
+        {
+            choice.gameObject.SetActive(false);
+        }
+    }
+
+    public void ShowChoices()
+    {
+        if (_choices == null || _choices.Count == 0) return;
+            foreach (var choice in _choices) 
+        {
+            choice.gameObject.SetActive(true);
+        }
+    }
+
     protected virtual void LoadData()
     {
         for (int i = 0; i < _choices.Count; i++)
@@ -91,6 +117,7 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
         selected = _choices[selectedIndex];
         selected.Select();
         collumnIndex = selectedIndex / prefabsPoolSize;
+        if(onHover != null)onHover(selectedIndex);
     }
 
     public virtual void Unfocus()
@@ -98,6 +125,7 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
         selected.DeSelect();
         selected = null;
         collumnIndex = 0;
+        if (onHover != null) onHover(-1);
     }
 
     public void SetTitle(string title)
@@ -118,6 +146,12 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
     public BaseChoiceMenu<T> GetSelectedChoice()
     {
         return selected;
+    }
+
+    public T GetChoiceDataByIndex(int index)
+    {
+        if (index < 0 || index >= _choices.Count) return default;
+        return _choices[index].GetData();
     }
 
     public void UpdateChoice(int index, T data)
@@ -191,6 +225,7 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
             if (reading.x > 0) NextCollumn();
             else PreviousCollumn();
         }
+        if (onHover != null) onHover(selected.Index);
     }
 
 }

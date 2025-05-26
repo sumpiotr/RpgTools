@@ -26,7 +26,7 @@ public class BattleCharacterChoice : BaseChoiceMenu<CharacterChoiceData>
     public void UpdateHealth(int newValue)
     {
         CurrentHealth = newValue;
-        healthSlider.value = CurrentHealth / _characterData.MaxHealth;
+        healthSlider.value = (float)CurrentHealth / (float)_characterData.MaxHealth;
     }
 
     public void UpdateEnergy(int newValue)
@@ -78,14 +78,16 @@ public struct CharacterChoiceData
 
     public bool Player;
 
+    public string Name;
     public Sprite Sprite;
     public int MaxHealth;
     public float Speed;
     public int MaxEnergy;
 
-    public CharacterChoiceData(bool player, Sprite sprite, int maxHealth, float speed, int maxEnergy)
+    public CharacterChoiceData(bool player, string name, Sprite sprite, int maxHealth, float speed, int maxEnergy)
     {
         Player = player;
+        Name = name;
         Sprite = sprite;
         MaxHealth = maxHealth;
         Speed = speed;
