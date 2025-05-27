@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Przyceluj
   Description: "Przyceluj aby zwi\u0119kszy\u0107 szanse na crita"
-  Cost: 0
+  Cost: 1
   Target: 0
   TargetTypeEnum: 2
   Stat: 4

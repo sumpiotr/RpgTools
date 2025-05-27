@@ -101,6 +101,11 @@ public class BattleManager : MonoBehaviour
             {
                 characterDisplayManager.UpdateHealth(true, index, _playerList[index].GetCurrentStatValue(CharacterStatsEnum.Health));
             });
+
+            _playerList[i].AddEnergyListener(() =>
+            {
+                characterDisplayManager.UpdatePlayerEnergy(index, _playerList[index].GetCurrentStatValue(CharacterStatsEnum.Energy));
+            });
         }
 
          characterDisplayManager.LoadPlayers(characters);
@@ -186,7 +191,7 @@ public class BattleManager : MonoBehaviour
 
     private void LoadPlayerMenu(PlayerCharacter player)
     {
-        playerTurnManager.LoadMenus(player.GetCharacterData(), (PlayerActionTypeEnum actionType, ActionBaseScriptableObject action) => ResolvePlayerAction(player, actionType, action));
+        playerTurnManager.LoadMenus(player, (PlayerActionTypeEnum actionType, ActionBaseScriptableObject action) => ResolvePlayerAction(player, actionType, action));
     }
 
     public void ResolvePlayerAction(PlayerCharacter player, PlayerActionTypeEnum actionType, ActionBaseScriptableObject action)

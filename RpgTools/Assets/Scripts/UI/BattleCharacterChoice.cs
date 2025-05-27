@@ -32,7 +32,7 @@ public class BattleCharacterChoice : BaseChoiceMenu<CharacterChoiceData>
     public void UpdateEnergy(int newValue)
     {
         CurrentEnergy = newValue;
-        energySlider.value = CurrentEnergy / _characterData.MaxEnergy;
+        energySlider.value = (float)CurrentEnergy / (float)_characterData.MaxEnergy;
     }
 
     public void UpdateInitiative(float newValue)

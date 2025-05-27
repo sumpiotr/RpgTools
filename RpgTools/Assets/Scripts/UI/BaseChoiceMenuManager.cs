@@ -154,6 +154,12 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
         return _choices[index].GetData();
     }
 
+    public BaseChoiceMenu<T> GetChoiceByIndex(int index)
+    {
+        if (index < 0 || index >= _choices.Count)return null;
+        return _choices[index];
+    }
+
     public void UpdateChoice(int index, T data)
     {
         _choices[index].UpdateData(data);

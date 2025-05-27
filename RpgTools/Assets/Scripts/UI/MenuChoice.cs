@@ -7,6 +7,16 @@ public class MenuChoice : BaseChoiceMenu<string>
     [SerializeField]
     private TextMeshProUGUI textUI;
 
+    public void DisableData()
+    {
+        Debug.Log(textUI.text);
+        textUI.color = Color.red;
+    }
+
+    public void EnableData()
+    {
+        textUI.color = Color.white;
+    }
 
 
     public override void LoadData(string text)

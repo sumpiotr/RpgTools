@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: Fex
   Sprite: {fileID: 5504296669712553928, guid: 0babb78c74ca56c49847399892ebc839, type: 3}
   Health: 35
-  Energy: 1
+  Energy: 2
   Attack: 8
   Defense: 2
   Speed: 2

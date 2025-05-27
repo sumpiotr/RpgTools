@@ -12,7 +12,7 @@ public class Character
     private Action _onHealthChange;
 
 
-    private Dictionary<CharacterStatsEnum, int> _currentStats;
+    protected Dictionary<CharacterStatsEnum, int> _currentStats;
     protected Dictionary<CharacterStatsEnum, int> _boofsValues;
 
     private Dictionary<DamageTypeEnum, int> _effectsCounter;
@@ -72,6 +72,10 @@ public class Character
 
     public virtual void TakeDamage(int attackDamage, DamageTypeEnum damageType, int effectChance)
     {
+        if(_effects.Contains(DamageTypeEnum.Slash) && damageType == DamageTypeEnum.Slash)
+        {
+            attackDamage = GetMultipliedValue(attackDamage, 1.25f);
+        }
         int totalDamae = attackDamage - _currentStats[CharacterStatsEnum.Defense] - _boofsValues[CharacterStatsEnum.Defense];
         attackDamage = Mathf.Max(minDamage, totalDamae);
         _currentStats[CharacterStatsEnum.Health] -= attackDamage;
@@ -194,7 +198,7 @@ public class Character
 
     }
 
-    public void ResolveAction(ActionBaseScriptableObject action, List<Character> targets)
+    public virtual void ResolveAction(ActionBaseScriptableObject action, List<Character> targets)
     {
         if (action.GetType() == typeof(BuffScriptableObject))
         {

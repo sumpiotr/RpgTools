@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: "Skup si\u0119"
   Description: "Skup sie i zregeneruj troche \u017Cycia"
-  Cost: 0
+  Cost: 2
   Target: 0
   TargetTypeEnum: 2
   Stat: 0

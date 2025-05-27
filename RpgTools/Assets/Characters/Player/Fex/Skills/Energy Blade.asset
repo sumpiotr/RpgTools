@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Ostrze Energi
   Description: Zaatakuj plazmowym ostrzem. Pomija obrone
-  Cost: 0
+  Cost: 4
   Target: 1
   TargetTypeEnum: 0
   DamageType: 7

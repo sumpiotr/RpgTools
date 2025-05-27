@@ -21,13 +21,13 @@ public class PlayerTurnMenuManager : MonoBehaviour
     private List<string> _mainMenuTips;
     private Menu _skillsMenu;
 
-    private Queue<Menu> _menuQueue;
+    private Stack<Menu> _menuStack;
 
     private Action<PlayerActionTypeEnum, ActionBaseScriptableObject> _onActionChoosen;
 
     private void Start()
     {
-        _menuQueue = new Queue<Menu>();
+        _menuStack = new Stack<Menu>();
         _mainMenu = new Dictionary<string, Action>();
         _mainMenuTips = new List<string>();
         _mainMenu.Add("Attack", () =>
@@ -59,54 +59,62 @@ public class PlayerTurnMenuManager : MonoBehaviour
     public void OnConfirmButtonClicked(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        _menuQueue.Last().onMenuItemConfirmed(battleChoiceMenuManager.GetSelectedChoice());
+        if(_menuStack.Count == 0) return;
+        if (!_menuStack.First().items[battleChoiceMenuManager.GetSelectedIndex()].enabled) return;
+        _menuStack.First().onMenuItemConfirmed(battleChoiceMenuManager.GetSelectedChoice());
     }
 
     public void OnCancelButtonClicked(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if (_menuQueue.Count <= 1) return;
-        _menuQueue.Dequeue();
-        SetupMenu(_menuQueue.First());
+        if (_menuStack.Count <= 1) return;
+
+        _menuStack.Pop();
+        SetupMenu(_menuStack.First());
     }
 
     #endregion
 
     public void OnMenuHover(int index)
     {
-        if (_menuQueue.Count == 0) return;
+        if (_menuStack.Count == 0) return;
         if (index == -1) showBattleHintEvent.CallEvent("");
-        else showBattleHintEvent.CallEvent(_menuQueue.Last().tips[index]);
+        else showBattleHintEvent.CallEvent(_menuStack.First().items[index].tip);
     }
 
-    public void LoadMenus(CharacterScriptableObject characterData, Action<PlayerActionTypeEnum, ActionBaseScriptableObject> onActionChoosen)
+    public void LoadMenus(PlayerCharacter playerData, Action<PlayerActionTypeEnum, ActionBaseScriptableObject> onActionChoosen)
     {
         battleChoiceMenuManager.ShowChoices();
-        _currentCharacterData = characterData;
+        _currentCharacterData = playerData.GetCharacterData();
         _onActionChoosen = (PlayerActionTypeEnum p, ActionBaseScriptableObject a) => {
             UnloadMenu();
         };
         _onActionChoosen += onActionChoosen;
-        battleChoiceMenuManager.SetTitle(characterData.Name);
-        List<string> attackNames = new List<string>();
-        List<string> attackDescriptions = new List<string>();
+        battleChoiceMenuManager.SetTitle(_currentCharacterData.Name);
+        List<MenuItem> attackMenuItems = new List<MenuItem>();
         foreach (ActionBaseScriptableObject skill in _currentCharacterData.Skills)
         {
-            attackNames.Add(skill.Name);
-            attackDescriptions.Add(skill.Description);
+            attackMenuItems.Add(new MenuItem(skill.Name, $"{skill.Description} [{skill.Cost} energi]", skill.Cost <= playerData.GetCurrentStatValue(CharacterStatsEnum.Energy)));
         }
-        _skillsMenu = new Menu(attackNames, attackDescriptions, (BaseChoiceMenu<string> x) =>
+        _skillsMenu = new Menu(attackMenuItems, (BaseChoiceMenu<string> x) =>
         {
             _onActionChoosen(PlayerActionTypeEnum.Skill, _currentCharacterData.Skills[x.Index]);
         });
+
 
         SetupMenu(new Menu(_mainMenu.Keys.ToList(), _mainMenuTips, (BaseChoiceMenu<string> x) => { _mainMenu[x.GetData()].Invoke(); }));
     }
 
     private void SetupMenu(Menu menu)
     {
-        _menuQueue.Enqueue(menu);
-        battleChoiceMenuManager.LoadChoices(menu.options);
+        _menuStack.Push(menu);
+        battleChoiceMenuManager.LoadChoices(menu.items.Select(x=>x.text).ToList());
+
+        for (int i = 0; i < menu.items.Count; i++){
+            if (!menu.items[i].enabled)((MenuChoice)battleChoiceMenuManager.GetChoiceByIndex(i)).DisableData();
+            else ((MenuChoice)battleChoiceMenuManager.GetChoiceByIndex(i)).EnableData();
+        }
+        
         battleChoiceMenuManager.Focus();
     }
 
@@ -130,21 +138,44 @@ public class PlayerTurnMenuManager : MonoBehaviour
         //battleChoiceMenuManager.gameObject.SetActive(false);
         battleChoiceMenuManager.Unfocus();
         battleChoiceMenuManager.HideChoices();
-        _menuQueue.Clear();
+        battleChoiceMenuManager.SetTitle("");
+        _menuStack.Clear();
     }
 
 }
 
 struct Menu 
 {
-    public List<string> options;
-    public List<string> tips;
+    public List<MenuItem> items;
     public Action<BaseChoiceMenu<string>> onMenuItemConfirmed;
 
-    public Menu(List<string> options, List<string> tips, Action<BaseChoiceMenu<string>> onMenuItemConfirmed)
+    public Menu(List<MenuItem> items, Action<BaseChoiceMenu<string>> onMenuItemConfirmed)
     {
-        this.options = options;
-        this.tips = tips;
+        this.items = items;
         this.onMenuItemConfirmed = onMenuItemConfirmed;
+    }
+
+    public Menu(List<string> texts, List<string> tips, Action<BaseChoiceMenu<string>> onMenuItemConfirmed)
+    {
+        this.items = new List<MenuItem>();
+        for (int i = 0; i < Math.Min(texts.Count, tips.Count); i++)
+        {
+            this.items.Add(new MenuItem(texts[i], tips[i], true));
+        }
+        this.onMenuItemConfirmed = onMenuItemConfirmed;
+    }
+}
+
+struct MenuItem
+{
+    public string text;
+    public string tip;
+    public bool enabled;
+
+    public MenuItem(string text, string tip, bool enabled)
+    {
+        this.text = text;
+        this.tip = tip;
+        this.enabled = enabled;
     }
 }

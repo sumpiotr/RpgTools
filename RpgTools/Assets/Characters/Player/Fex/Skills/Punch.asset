@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: "Cios pi\u0119\u015Bci\u0105"
   Description: "Nazwa m\xF3wi sama za siebie. Ma\u0142a szansa na og\u0142uszenie
     przeciwnika"
-  Cost: 0
+  Cost: 1
   Target: 1
   TargetTypeEnum: 0
   DamageType: 1

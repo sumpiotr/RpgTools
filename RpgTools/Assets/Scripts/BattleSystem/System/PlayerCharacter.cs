@@ -4,16 +4,21 @@ using UnityEngine;
 
 public class PlayerCharacter : Character
 {
-
+    private const int restoreEnergyValue = 3;
     private bool _guarding = false;
 
     private Action<PlayerCharacter, bool, Action<int>> _chooseTarget;
+    private Action onEnergyChange;
 
 
     public PlayerCharacter(CharacterScriptableObject characterData) : base(characterData)
     {
     }
 
+    public void AddEnergyListener(Action action)
+    {
+        onEnergyChange = action;
+    }
     public void SetChooseTarget(Action<PlayerCharacter, bool, Action<int>> chooseTarget)
     {
         _chooseTarget = chooseTarget;
@@ -36,7 +41,20 @@ public class PlayerCharacter : Character
 
     public void BaseAttack(Character target)
     {
+        if (_currentStats[CharacterStatsEnum.Energy] != GetCharacterData().Energy) 
+        {
+            int newEnergy = _currentStats[CharacterStatsEnum.Energy] + restoreEnergyValue;
+            _currentStats[CharacterStatsEnum.Energy] = Math.Min(newEnergy, GetCharacterData().Energy);
+            if (onEnergyChange != null) onEnergyChange();
+        }
         target.TakeDamage(_characterData.Attack + _boofsValues[CharacterStatsEnum.Attack], _characterData.baseAttackType, 0);
+    }
+
+    public override void ResolveAction(ActionBaseScriptableObject action, List<Character> targets)
+    {
+        _currentStats[CharacterStatsEnum.Energy] -= action.Cost;
+        if(onEnergyChange != null) onEnergyChange();
+        base.ResolveAction(action, targets);
     }
 
     protected override void ChooseTargetAlly(ActionBaseScriptableObject action, List<Character> allies)
