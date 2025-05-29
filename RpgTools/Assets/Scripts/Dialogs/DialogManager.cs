@@ -11,27 +11,12 @@ using System;
 
 public class DialogManager : MonoBehaviour
 {
-
-    #region EventListeners 
-    [Header("Event Listeners")]
-    [SerializeField]
-    private ActionEventScriptableObject setDialogEndCallbackEvent;
-
-    [SerializeField]
-    private StringEventScriptableObject startDialogEvent;
-
-    [SerializeField]
-    private StringEventScriptableObject showSimpleMessage;
-
-    [SerializeField]
-    private StringEventScriptableObject changeInputMapEvent;
-
-    #endregion
-
     [SerializeField]
     private TextAsset simpleMessage;
 
     private Action onDialogEnded;
+
+    private InputMapEnum _previousInput = InputMapEnum.Player;
 
     #region UI variables
     [Header("Dialog UI")]
@@ -58,46 +43,46 @@ public class DialogManager : MonoBehaviour
 
     private Story _currentStory;
 
+    public static DialogManager Instance = null;
+
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(this);
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        startDialogEvent.AddEvent(StartDialog);
-        showSimpleMessage.AddEvent(ShowSimpleMessage);
-        setDialogEndCallbackEvent.AddEvent((Action action) => { onDialogEnded = action; });
         dialogText.gameObject.SetActive(true);
         dialogUI.SetActive(false);
         dialogChoicesManager.gameObject.SetActive(false);
     }
 
-    private void StartDialog(string data)
+    public void StartDialog(string data, Action onEnded)
     {
-        if (_currentStory != null) return;
-
-
-        changeInputMapEvent.CallEvent("Dialog");
-        dialogUI.SetActive(true);
-
-        _currentStory = new Story(data);
-        SetFunctions(_currentStory.globalTags);
-        ContinueDialog();
+        StartDialog(new Story(data), onEnded);
     }
 
-    private void ShowSimpleMessage(string message)
+    public void ShowSimpleMessage(string message, Action onEnded)
     {
         Story story = new Story(simpleMessage.text);
         story.variablesState["message"] = message;
-        StartDialog(story);
+        StartDialog(story, onEnded);
     }
 
-    private void StartDialog(Story story)
+    private void StartDialog(Story story, Action onEnded)
     {
         if (_currentStory != null) return;
 
-        changeInputMapEvent.CallEvent("Dialog");
+        _previousInput = InputManager.Instance.GetInputMap();
+        InputManager.Instance.ChangeMapping(InputMapEnum.Dialog);
+
         dialogUI.SetActive(true);
 
         _currentStory = story;
+        onDialogEnded = onEnded;
         SetFunctions(_currentStory.globalTags);
         ContinueDialog();
     }
@@ -164,7 +149,7 @@ public class DialogManager : MonoBehaviour
     {
         _currentStory = null;
         dialogUI.SetActive(false);
-        changeInputMapEvent.CallEvent("Player");
+        InputManager.Instance.ChangeMapping(_previousInput);
         if(onDialogEnded != null)
         {
             onDialogEnded();
@@ -186,7 +171,6 @@ public class DialogManager : MonoBehaviour
         if(_currentStory.currentChoices.Count > 0)
         {
             int choiceIndex = dialogChoicesManager.GetSelectedIndex();
-
             dialogChoicesManager.gameObject.SetActive(false);
             dialogText.gameObject.SetActive(true);
             _currentStory.ChooseChoiceIndex(choiceIndex);

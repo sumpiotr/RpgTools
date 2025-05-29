@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Enemy : Character
 {
@@ -15,6 +17,9 @@ public class Enemy : Character
 
     private List<EnemyAction> _actions;
 
+    private Action _onWeaknessHitted;
+    private Action _onResistanceHitted;
+
 
 
     public Enemy(EnemyScriptableObject enemyData) : base(enemyData)
@@ -26,6 +31,16 @@ public class Enemy : Character
         {
           _actions.Add(new EnemyAction(action));
         }
+    }
+
+    public void SetOnWeaknessHitted(Action onWeaknessHitted)
+    {
+        _onWeaknessHitted = onWeaknessHitted;
+    }
+
+    public void SetOnResistanceHitted(Action onResistanceHitted)
+    {
+        _onResistanceHitted = onResistanceHitted;
     }
 
     public ActionBaseScriptableObject ChooseAction()
@@ -50,11 +65,13 @@ public class Enemy : Character
         {
             attackDamage = GetMultipliedValue(attackDamage, weaknessDamageMultiplier);
             effectChance = GetMultipliedValue(attackDamage, weaknessEffectChanceMultiplier);
+            if (_onWeaknessHitted != null) _onWeaknessHitted();
         }
         else if (_enemyData.resistances.Contains(damageType)) 
         {
             attackDamage = GetMultipliedValue(attackDamage, resistanceDamageMultiplier);
             effectChance = GetMultipliedValue(attackDamage, resistanceEffectChanceMultiplier);
+            if (_onResistanceHitted != null) _onResistanceHitted();
         }
         base.TakeDamage(attackDamage, damageType, effectChance);
     }
@@ -72,6 +89,8 @@ public class Enemy : Character
         list.Add(enemies[Random.Range(0, enemies.Count - 1)]);
         ResolveAction(action, list);
     }
+
+
 
 
 }

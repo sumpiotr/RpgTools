@@ -78,6 +78,18 @@ public class BattleCharacterDisplayManager : MonoBehaviour
         enemyDisplay.UpdateChoicesInitiative(value);
     }
 
+    public void DisplayEffect(bool player, int index, DamageTypeEnum effect)
+    {
+        if(player)playerDisplay.DisplayChoiceEffect(index, effect);
+        else enemyDisplay.DisplayChoiceEffect(index,effect);
+    }
+
+    public void HideEffect(bool player, int index, DamageTypeEnum effect)
+    {
+        if (player) playerDisplay.HideChoiceEffect(index, effect);
+        else enemyDisplay.HideChoiceEffect(index, effect);
+    }
+
     public void ChoiceCharacter(bool player, Action<int> onChoosen)
     {
         _playerChoose = player;
@@ -109,6 +121,11 @@ public class BattleCharacterDisplayManager : MonoBehaviour
         if (!context.performed) return;
         if (_playerChoose) playerDisplay.SelectionMove(context);
         else enemyDisplay.SelectionMove(context);
+    }
+
+    internal BattleCharacterChoiceMenu GetPlayerMenu()
+    {
+        return playerDisplay;
     }
 
 

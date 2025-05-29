@@ -21,4 +21,14 @@ public class BattleCharacterChoiceMenu : BaseChoiceMenuManager<CharacterChoiceDa
         }
       
     }
+
+    public void DisplayChoiceEffect(int index, DamageTypeEnum effect)
+    {
+        ((BattleCharacterChoice)_choices[index]).DisplayEffect(effect);
+    }
+
+    public void HideChoiceEffect(int index, DamageTypeEnum effect)
+    {
+        ((BattleCharacterChoice)_choices[index]).HideEffect(effect);
+    }
 }

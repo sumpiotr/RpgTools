@@ -7,14 +7,6 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
-    [SerializeField]
-    private StringEventScriptableObject changeInputMapEvent;
-
-    [SerializeField]
-    private StringEventScriptableObject displayMessage;
-
-    [SerializeField]
-    private ActionEventScriptableObject setDialogCallbackEvent;
 
     [SerializeField]
     private GameObject battleUI;
@@ -22,7 +14,6 @@ public class BattleManager : MonoBehaviour
     [SerializeField]
     private PlayerTurnMenuManager playerTurnManager;
 
-    [SerializeField]
     private BattleCharacterDisplayManager characterDisplayManager;
 
     private const float tickValue = 0.1f;
@@ -30,6 +21,9 @@ public class BattleManager : MonoBehaviour
 
     private List<Enemy> _enemyList;
     private List<PlayerCharacter> _playerList;
+
+    private Queue<EffectInfo> _newEffectsInfo;
+    private Queue<EffectInfo> _removedEffectsInfo;
 
     private Queue<PlayerCharacter> _playerTurnQueue;
     private Queue<Enemy> _enemyTurnQueue;
@@ -44,34 +38,31 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        List< PlayerCharacter > characters = new List<PlayerCharacter> ();
-     
-        foreach (CharacterScriptableObject data in playerlist) characters.Add(new PlayerCharacter(data));
-
-        foreach(PlayerCharacter character in characters)
-        {
-            character.SetChooseTarget(ChooseTarget);
-        }
-        LoadBattle(encouter, characters);
+        characterDisplayManager = PlayerMenuManager.Instance.GetBattleMenuManger();
+        //LoadBattle(encouter);
     }
 
     private void DisplayBattleMessage(string message, Action onMessageEnded)
     {
         playerTurnManager.DisableMenu();
 
-        setDialogCallbackEvent.CallEvent(()=> {
+        Action onMessageEnd = ()=> {
             playerTurnManager.EnableMenu();
-            changeInputMapEvent.CallEvent("battle");
             onMessageEnded();
-            });
+            };
 
-        displayMessage.CallEvent(message);    
+        DialogManager.Instance.ShowSimpleMessage(message, onMessageEnd);    
     }
 
-    public void LoadBattle(EncounterScriptableObject encounter, List<PlayerCharacter> characters)
+    public void LoadBattle(EncounterScriptableObject encounter)
     {
         battleUI.SetActive(true);
+
+        PlayerMenuManager.Instance.SetInBattle(true);
+
         _enemyList = new List<Enemy>();
+        _newEffectsInfo = new Queue<EffectInfo>();
+        _removedEffectsInfo = new Queue<EffectInfo>();
 
         foreach (EncounterMonster encounterMonster in encouter.EnemyList)
         {
@@ -83,44 +74,74 @@ public class BattleManager : MonoBehaviour
                 _enemyList.Add(enemy); 
             }
         }
+        _playerList = PlayerDataManager.Instance.GetPlayers();
 
-        for (int i = 0; i < _enemyList.Count; i++) 
+        SetCharactersListeners();
+
+         characterDisplayManager.LoadPlayers(_playerList);
+        characterDisplayManager.LoadEnemies(_enemyList);
+
+        _playerTurnQueue = new Queue<PlayerCharacter>();
+        _enemyTurnQueue = new Queue<Enemy>();
+
+        InputManager.Instance.ChangeMapping(InputMapEnum.Battle);
+
+        updateCoroutine = UpdateBattle();
+        StartCoroutine(updateCoroutine);
+    }
+
+    public void EndBattle()
+    {
+        PlayerMenuManager.Instance.SetInBattle(false);
+        battleUI.SetActive(false);
+        _playerTurnQueue.Clear();
+        _enemyTurnQueue.Clear();
+        _newEffectsInfo.Clear();
+        _removedEffectsInfo.Clear();
+        InputManager.Instance.ChangeMapping(InputMapEnum.Player);
+    }
+
+    private void SetCharactersListeners()
+    {
+        for (int i = 0; i < _enemyList.Count; i++)
         {
             int index = i;
             _enemyList[i].AddHealthListener(() =>
             {
                 characterDisplayManager.UpdateHealth(false, index, _enemyList[index].GetCurrentStatValue(CharacterStatsEnum.Health));
             });
-        }
-        _playerList = characters;
 
-        for (int i = 0; i < _playerList.Count; i++) 
+            _enemyList[i].AddEffectGainListener((DamageTypeEnum effect) =>
+            {
+                Debug.Log("new debuff");
+                _newEffectsInfo.Enqueue(new EffectInfo(false, index, effect));
+            });
+
+            _enemyList[i].AddEffectRemovedListener((DamageTypeEnum effect) =>
+            {
+                _removedEffectsInfo.Enqueue(new EffectInfo(false, index, effect));
+            });
+        }
+
+        for (int i = 0; i < _playerList.Count; i++)
         {
             int index = i;
-            _playerList[i].AddHealthListener(() =>
+
+            _playerList[i].AddEffectGainListener((DamageTypeEnum effect) =>
             {
-                characterDisplayManager.UpdateHealth(true, index, _playerList[index].GetCurrentStatValue(CharacterStatsEnum.Health));
+                _newEffectsInfo.Enqueue(new EffectInfo(true, index, effect));
             });
 
-            _playerList[i].AddEnergyListener(() =>
+            _playerList[i].AddEffectRemovedListener((DamageTypeEnum effect) =>
             {
-                characterDisplayManager.UpdatePlayerEnergy(index, _playerList[index].GetCurrentStatValue(CharacterStatsEnum.Energy));
+                _removedEffectsInfo.Enqueue(new EffectInfo(true, index, effect));
             });
+
+            _playerList[i].SetChooseTarget(ChooseTarget);
         }
-
-         characterDisplayManager.LoadPlayers(characters);
-        characterDisplayManager.LoadEnemies(_enemyList);
-
-        _playerTurnQueue = new Queue<PlayerCharacter>();
-        _enemyTurnQueue = new Queue<Enemy>();
-
-        changeInputMapEvent.CallEvent("Battle");
-
-        updateCoroutine = UpdateBattle();
-        StartCoroutine(updateCoroutine);
     }
 
-    public IEnumerator UpdateBattle()
+    private IEnumerator UpdateBattle()
     {
         while (_playerTurnQueue.Count == 0 && _enemyTurnQueue.Count == 0) 
         {
@@ -145,6 +166,16 @@ public class BattleManager : MonoBehaviour
 
     private void ResolveTurns()
     {
+        if(_removedEffectsInfo.Count > 0)
+        {
+            ResolveRemovedEffectsInfo();
+            return;
+        }
+        if(_newEffectsInfo.Count > 0)
+        {
+            ResolveNewEffectsInfo();
+            return;
+        }
         if(_playerTurnQueue.Count > 0) 
         {
             ResolvePlayerTurnQueue();
@@ -160,32 +191,104 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    private void ResolveNewEffectsInfo()
+    {
+        if(_newEffectsInfo.Count == 0)
+        {
+            ResolveTurns();
+            return; 
+        }
+        EffectInfo data = _newEffectsInfo.Dequeue();
+        string info = "";
+        CharacterScriptableObject characterData = data.Player ? _playerList[data.Index].GetCharacterData() : _enemyList[data.Index].GetCharacterData();
+        if (data.Effect == DamageTypeEnum.Slash) info = $"Na {characterData.Name} zosta³o na³o¿one krwawienie";
+        else if (data.Effect == DamageTypeEnum.Buldgeoning) info = $"{characterData.Name} zosta³ og³uszony";
+        else if (data.Effect == DamageTypeEnum.Ice) info = $"{characterData.Name} zosta³ przymro¿ony";
+        else if (data.Effect == DamageTypeEnum.Electricity) info = $"Na {characterData.Name} zosta³ na³o¿ony parali¿";
+        else if (data.Effect == DamageTypeEnum.Fire) info = $"Na {characterData.Name} zosta³o na³o¿one przypalenie";
+        else
+        {
+            ResolveNewEffectsInfo();
+            return;
+        }
+
+        DisplayBattleMessage(info, ResolveNewEffectsInfo);
+        characterDisplayManager.DisplayEffect(data.Player, data.Index, data.Effect);
+    }
+
+    private void ResolveRemovedEffectsInfo()
+    {
+        if (_removedEffectsInfo.Count == 0)
+        {
+            ResolveTurns();
+            return;
+        }
+        EffectInfo data = _removedEffectsInfo.Dequeue();
+        characterDisplayManager.HideEffect(data.Player, data.Index, data.Effect);
+        ResolveRemovedEffectsInfo();
+    }
+
     private void ResolvePlayerTurnQueue()
     {
         if (_playerTurnQueue.Count == 0)return;
         
-        PlayerCharacter currentCharacter = _playerTurnQueue.Dequeue();
-        LoadPlayerMenu(currentCharacter);
+        PlayerCharacter player = _playerTurnQueue.Dequeue();
+        if (!player.CanStartTurn())
+        {
+            string infoMessage = $"{player.GetCharacterData().Name} odpoczywa";
+            if (player.IsUnderEffect(DamageTypeEnum.Buldgeoning))
+            {
+                infoMessage = $"{player.GetCharacterData().Name} jest og³uszony";
+            }
+            else if (player.IsUnderEffect(DamageTypeEnum.Electricity))
+            {
+                infoMessage = $"{player.GetCharacterData().Name} jest sparali¿owany";
+            }
+            DisplayBattleMessage(infoMessage, () =>
+            {
+                EndPlayerTurn(player);
+            });
+            return;
+        }
+        LoadPlayerMenu(player);
     }
 
     private void ResolveEnemyQueue()
     {
         Enemy enemy = _enemyTurnQueue.Dequeue();
+        if (!enemy.CanStartTurn())
+        {
+            string infoMessage = $"{enemy.GetCharacterData().Name} odpoczywa";
+            if (enemy.IsUnderEffect(DamageTypeEnum.Buldgeoning))
+            {
+                infoMessage = $"{enemy.GetCharacterData().Name} jest og³uszony";
+            }
+            else if (enemy.IsUnderEffect(DamageTypeEnum.Electricity))
+            {
+                infoMessage = $"{enemy.GetCharacterData().Name} jest sparali¿owany";
+            }
+            DisplayBattleMessage(infoMessage, () =>
+            {
+                EndEnemyTurn(enemy);
+            });
+            return;
+        }
         ActionBaseScriptableObject action = enemy.ChooseAction();
         if (action == null)
         {
-            DisplayBattleMessage(enemy.Name + " odpoczywa", EndEnemyTurn);
+            DisplayBattleMessage(enemy.Name + " odpoczywa", () => { EndEnemyTurn(enemy); });
             return;
         }
 
         DisplayBattleMessage($"{enemy.Name} u¿ywa {action.Name}", () =>
         {
-            enemy.ChooseTargetAndResolveAction(action, _enemyList.Select(x => (Character)x).ToList(), _playerList.Select(x => (Character)x).ToList(), EndEnemyTurn);
+            enemy.ChooseTargetAndResolveAction(action, _enemyList.Select(x => (Character)x).ToList(), _playerList.Select(x => (Character)x).ToList(), ()=> { EndEnemyTurn(enemy); });
         });
     }
 
-    private void EndEnemyTurn()
+    private void EndEnemyTurn(Character enemy)
     {
+        enemy.EndTurn();
         ResolveTurns();
     }
 
@@ -223,10 +326,10 @@ public class BattleManager : MonoBehaviour
 
     private void ChooseTarget(PlayerCharacter currentPlayer, bool player, Action<int> onChoosen) 
     {
-        changeInputMapEvent.CallEvent("CharacterSelection");
+        InputManager.Instance.ChangeMapping(InputMapEnum.CharacterSelection);
         characterDisplayManager.ChoiceCharacter(player, (int index) =>
         {
-            changeInputMapEvent.CallEvent("Battle");
+            InputManager.Instance.ChangeMapping(InputMapEnum.Battle);
             if (index == -1) LoadPlayerMenu(currentPlayer);
             else
             {
@@ -236,4 +339,18 @@ public class BattleManager : MonoBehaviour
     }
 
 
+}
+
+struct EffectInfo 
+{
+    public bool Player;
+    public int Index;
+    public DamageTypeEnum Effect;
+
+    public EffectInfo(bool player, int index, DamageTypeEnum effect)
+    {
+        Player = player;
+        Index = index;
+        Effect = effect;
+    }
 }

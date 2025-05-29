@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+using Random = UnityEngine.Random;
 
 public class Character
 {
@@ -11,6 +11,8 @@ public class Character
 
     private Action _onHealthChange;
 
+    private Action<DamageTypeEnum> _onGainEffect;
+    private Action<DamageTypeEnum> _onEffectRemoved;
 
     protected Dictionary<CharacterStatsEnum, int> _currentStats;
     protected Dictionary<CharacterStatsEnum, int> _boofsValues;
@@ -25,6 +27,19 @@ public class Character
     private float _initiative = 0;
 
     const int minDamage = 1;
+    #region Effects consts
+
+    const float criticalDamageMultiplier = 2f;
+    const float freezeMultiplier = 1.5f;
+    const float fireMultiplier = 0.1f;
+    const int electricityChance = 30;
+
+    const int minBaseEffectDuration = 1;
+    const int maxBaseEffectDuration = 3;
+
+    const int knockoutDuration = 1;
+
+    #endregion
 
     public Character(CharacterScriptableObject characterData)
     {
@@ -70,16 +85,35 @@ public class Character
         _onHealthChange += onHealthChange;
     }
 
+    public void AddEffectGainListener(Action<DamageTypeEnum> onEffectGained)
+    {
+        _onGainEffect = onEffectGained;
+    }
+
+    public void AddEffectRemovedListener(Action<DamageTypeEnum> onEffectRemoved)
+    {
+        _onEffectRemoved = onEffectRemoved;
+    }
+
+
     public virtual void TakeDamage(int attackDamage, DamageTypeEnum damageType, int effectChance)
     {
+
         if(_effects.Contains(DamageTypeEnum.Slash) && damageType == DamageTypeEnum.Slash)
         {
             attackDamage = GetMultipliedValue(attackDamage, 1.25f);
         }
+
         int totalDamae = attackDamage - _currentStats[CharacterStatsEnum.Defense] - _boofsValues[CharacterStatsEnum.Defense];
+        if (damageType == DamageTypeEnum.Energy) totalDamae = attackDamage;//ignore defense
         attackDamage = Mathf.Max(minDamage, totalDamae);
         _currentStats[CharacterStatsEnum.Health] -= attackDamage;
         _onHealthChange.Invoke();
+
+        if (Random.Range(1, 101) <= effectChance)
+        {
+            AddEffect(damageType);
+        }
     }
 
 
@@ -98,21 +132,46 @@ public class Character
         }
     }
 
+    public void AddEffect(DamageTypeEnum effect)
+    {
+        if (_effects.Contains(effect)) return;
+        _effects.Add(effect);
+        int effectTime = effect == DamageTypeEnum.Buldgeoning ? knockoutDuration : Random.Range(minBaseEffectDuration, maxBaseEffectDuration+1);
+        _effectsCounter[effect] = effectTime;
+        if(_onGainEffect != null)_onGainEffect(effect);
+
+    }
+
     public void Attack(Character target, DamageTypeEnum type, int effectChance)
     {
+        int damage = GetTotalStatValue(CharacterStatsEnum.Attack);
+        if (Random.Range(1, 101) <= GetTotalStatValue(CharacterStatsEnum.CriticalRate) || target.IsUnderEffect(DamageTypeEnum.Buldgeoning)) damage = GetMultipliedValue(damage, criticalDamageMultiplier); 
         target.TakeDamage(_currentStats[CharacterStatsEnum.Attack] + _boofsValues[CharacterStatsEnum.Attack], type, effectChance);
     }
 
     public bool UpdateInitiative(float val)
     {
         _initiative += val;
-        return _initiative >= _currentStats[CharacterStatsEnum.Speed];
+        int speed = GetCurrentStatValue(CharacterStatsEnum.Speed);
+        if (_effects.Contains(DamageTypeEnum.Ice)) speed = GetMultipliedValue(speed, freezeMultiplier);
+        return _initiative >= speed;
     }
 
-    public virtual void StartTurn()
+    public bool CanStartTurn()
     {
-        _initiative = _currentStats[CharacterStatsEnum.Speed] - _boofsValues[CharacterStatsEnum.Speed];
-        _initiative = Mathf.Max(1, _initiative);
+        bool playTurn = true;
+        if (_effects.Contains(DamageTypeEnum.Buldgeoning)) { 
+            playTurn = false;
+            //_showMessage($"{_characterData.Name} jest og³uszony");
+        }
+        if (_effects.Contains(DamageTypeEnum.Electricity))
+        {
+            if (Random.Range(1, 101) <= electricityChance) {
+                playTurn = false;
+                //if (_showMessage != null) _showMessage($"{_characterData.Name} jest sparali¿owany");
+            }
+        }
+        return playTurn;
     }
 
     public void EndTurn()
@@ -139,16 +198,24 @@ public class Character
     {
         if (_effects.Contains(DamageTypeEnum.Fire))
         {
-            _currentStats[CharacterStatsEnum.Health] -= GetMultipliedValue(_characterData.Health, 0.1f);
+            _currentStats[CharacterStatsEnum.Health] -= GetMultipliedValue(_characterData.Health, fireMultiplier);
         }
-        
+
+
+        List<DamageTypeEnum> toRemove = new List<DamageTypeEnum>();
         foreach(DamageTypeEnum effect in _effects)
         {
             _effectsCounter[effect] -= 1;
             if(_effectsCounter[effect] == 0)
             {
-                _effects.Remove(effect);
+                toRemove.Add(effect);
             }
+        }
+
+        foreach (DamageTypeEnum type in toRemove)
+        {
+            _effects.Remove(type);
+            if(_onEffectRemoved != null)_onEffectRemoved(type);
         }
     }
 
@@ -160,6 +227,16 @@ public class Character
     public int GetCurrentStatValue(CharacterStatsEnum stat)
     {
         return _currentStats[stat];
+    }
+
+    public int GetTotalStatValue(CharacterStatsEnum stat)
+    {
+        return _currentStats[stat] + _boofsValues[stat];
+    }
+
+    public bool IsUnderEffect(DamageTypeEnum effect)
+    {
+        return _effects.Contains(effect);
     }
 
     protected int GetMultipliedValue(int value, float multiplier)

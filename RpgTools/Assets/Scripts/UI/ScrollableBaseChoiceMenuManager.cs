@@ -36,7 +36,7 @@ public abstract class ScrollableBaseChoiceMenuManager<T> : BaseChoiceMenuManager
     public override void Focus(int selectedIndex = 0)
     {
         _startDisplayIndex = selectedIndex - (selectedIndex % (prefabsPoolSize * choicesContainers.Count));
-        base.Focus(selectedIndex);
+        base.Focus(selectedIndex % (prefabsPoolSize * choicesContainers.Count));
     }
 
     public override void Unfocus()
@@ -77,11 +77,10 @@ public abstract class ScrollableBaseChoiceMenuManager<T> : BaseChoiceMenuManager
         {
             _startDisplayIndex += prefabsPoolSize * choicesContainers.Count;
             Debug.Log(_startDisplayIndex);
-            Debug.Log(collumnIndex * prefabsPoolSize);
             selected.DeSelect();
-            newIndex = collumnIndex * prefabsPoolSize;
+            newIndex = collumnIndex * prefabsPoolSize + _startDisplayIndex;
             LoadData();
-            Focus(_startDisplayIndex + newIndex < _dataChoices.Count ? newIndex : 0);
+            Focus(newIndex < _dataChoices.Count ? newIndex : 0);
         }
     }
 

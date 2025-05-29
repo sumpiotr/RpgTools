@@ -1,39 +1,23 @@
+using System;
+using System.Collections.Generic;
 using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattleCharacterChoice : BaseChoiceMenu<CharacterChoiceData>
+public class BattleCharacterChoice : CharacterMenuChoice
 {
-    private CharacterChoiceData _characterData;
     
-    [SerializeField]
-    private Image image;
-
-    [SerializeField]
-    private Slider healthSlider;
-    [SerializeField]
-    private Slider energySlider;
     [SerializeField]
     private Slider initiativeSlider;
 
-    private int CurrentHealth;
-    private int CurrentEnergy;
-    private float CurrentInitiativeValue;
 
     [SerializeField]
-    private GameObject images;
+    private List<EffectImage> effectsImages;
 
-    public void UpdateHealth(int newValue)
-    {
-        CurrentHealth = newValue;
-        healthSlider.value = (float)CurrentHealth / (float)_characterData.MaxHealth;
-    }
 
-    public void UpdateEnergy(int newValue)
-    {
-        CurrentEnergy = newValue;
-        energySlider.value = (float)CurrentEnergy / (float)_characterData.MaxEnergy;
-    }
+    private Dictionary<DamageTypeEnum, GameObject> effects; 
+
+    private float CurrentInitiativeValue;
 
     public void UpdateInitiative(float newValue)
     {
@@ -44,14 +28,26 @@ public class BattleCharacterChoice : BaseChoiceMenu<CharacterChoiceData>
 
     public override void LoadData(CharacterChoiceData data)
     {
-        _characterData = data;
-        images.SetActive(true);
-        image.sprite = data.Sprite;
-        _characterData = data;
-        energySlider.gameObject.SetActive(_characterData.Player);
-        healthSlider.value = 1;
-        energySlider.value = 1;
-        initiativeSlider.value = 1;
+        base.LoadData(data);
+
+        effects = new Dictionary<DamageTypeEnum, GameObject>();
+
+        foreach (EffectImage effectImage in effectsImages) 
+        {
+            effectImage.image.SetActive(false);
+            effects[effectImage.damageType] = effectImage.image;
+        }
+
+    }
+
+    public void DisplayEffect(DamageTypeEnum effect)
+    {
+        effects[effect].SetActive(true);
+    }
+
+    public void HideEffect(DamageTypeEnum effect)
+    {
+        effects[effect].SetActive(false);
     }
 
     public override CharacterChoiceData GetData()
@@ -61,38 +57,15 @@ public class BattleCharacterChoice : BaseChoiceMenu<CharacterChoiceData>
 
     public override void UpdateData(CharacterChoiceData data)
     {
-        energySlider.gameObject.SetActive(_characterData.Player);
-        if(data.MaxHealth != CurrentHealth)UpdateHealth(data.MaxHealth);
-        if(data.Speed != CurrentInitiativeValue)UpdateInitiative(data.Speed);
-        if(data.MaxEnergy != CurrentEnergy)UpdateEnergy(data.MaxEnergy);
+        base.UpdateData(data);
+        if (data.Speed != CurrentInitiativeValue) UpdateInitiative(data.Speed);
     }
 
-    public override void ClearData()
-    {
-        images.SetActive(false);
-    }
 }
 
-public struct CharacterChoiceData
+[Serializable]
+struct EffectImage 
 {
-
-    public bool Player;
-
-    public string Name;
-    public Sprite Sprite;
-    public int MaxHealth;
-    public float Speed;
-    public int MaxEnergy;
-
-    public CharacterChoiceData(bool player, string name, Sprite sprite, int maxHealth, float speed, int maxEnergy)
-    {
-        Player = player;
-        Name = name;
-        Sprite = sprite;
-        MaxHealth = maxHealth;
-        Speed = speed;
-        MaxEnergy = maxEnergy;
-    }
-
-    
+    public DamageTypeEnum damageType;
+    public GameObject image;
 }
