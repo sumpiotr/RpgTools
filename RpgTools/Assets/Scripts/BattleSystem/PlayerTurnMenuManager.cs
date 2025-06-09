@@ -120,7 +120,7 @@ public class PlayerTurnMenuManager : MonoBehaviour
 
     private void ShowItemMenu()
     {
-
+        _onActionChoosen(PlayerActionTypeEnum.Item, null);
     }
 
     public void DisableMenu()

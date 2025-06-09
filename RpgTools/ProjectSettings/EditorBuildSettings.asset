@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/DoveVillage.unity
     guid: ec88ee7b3bd1dd4419f11b0a9c914fad
   - enabled: 1
-    path: Assets/Scenes/SecretHouse.unity
+    path: Assets/Scenes/FexHouse.unity
     guid: e99ba3f039e01564fbbed5ff9d1ee18f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

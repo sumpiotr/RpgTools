@@ -846,7 +846,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1500, y: 300}
+  m_SizeDelta: {x: 20, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3473289815956732945
 CanvasRenderer:
@@ -871,10 +871,12 @@ MonoBehaviour:
   selection: {fileID: 4383234912896829228}
   Index: 0
   image: {fileID: 1693097100288937704}
-  nameText: {fileID: 5369726187397658851}
   healthSlider: {fileID: 9125721621386852515}
   energySlider: {fileID: 3362722467885270434}
   choiceContainer: {fileID: 9158031967041606769}
+  nameText: {fileID: 5369726187397658851}
+  healthStateText: {fileID: 7460231727264825406}
+  energyStateText: {fileID: 4070794500456106950}
 --- !u!1 &5996319385727093435
 GameObject:
   m_ObjectHideFlags: 0

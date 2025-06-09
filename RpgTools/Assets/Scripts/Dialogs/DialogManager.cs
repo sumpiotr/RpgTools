@@ -65,11 +65,21 @@ public class DialogManager : MonoBehaviour
         StartDialog(new Story(data), onEnded);
     }
 
+    public void StartDialog(string data)
+    {
+        StartDialog(new Story(data), null);
+    }
+
     public void ShowSimpleMessage(string message, Action onEnded)
     {
         Story story = new Story(simpleMessage.text);
         story.variablesState["message"] = message;
         StartDialog(story, onEnded);
+    }
+
+    public void ShowSimpleMessage(string message)
+    {
+       ShowSimpleMessage(message, null);
     }
 
     private void StartDialog(Story story, Action onEnded)
@@ -161,6 +171,7 @@ public class DialogManager : MonoBehaviour
     public void ConfirmButtonClicked(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
+        if (_currentStory == null) return;
         if (_animating)
         {
             StopCoroutine(_animationCoroutine);

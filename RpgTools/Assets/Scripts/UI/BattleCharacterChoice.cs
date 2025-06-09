@@ -4,7 +4,7 @@ using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattleCharacterChoice : CharacterMenuChoice
+public class BattleCharacterChoice : BaseCharacterMenuChoice
 {
     
     [SerializeField]

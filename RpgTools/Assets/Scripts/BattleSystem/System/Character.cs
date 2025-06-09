@@ -295,7 +295,7 @@ public class Character
         }
 
         EndTurn();
-        _onActionResolved.Invoke();
+        if(_onActionResolved != null)_onActionResolved.Invoke();
     }
 
 

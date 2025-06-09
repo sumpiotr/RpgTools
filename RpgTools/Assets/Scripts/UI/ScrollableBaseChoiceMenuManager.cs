@@ -76,7 +76,6 @@ public abstract class ScrollableBaseChoiceMenuManager<T> : BaseChoiceMenuManager
         else if (_startDisplayIndex + prefabsPoolSize * choicesContainers.Count < _dataChoices.Count)
         {
             _startDisplayIndex += prefabsPoolSize * choicesContainers.Count;
-            Debug.Log(_startDisplayIndex);
             selected.DeSelect();
             newIndex = collumnIndex * prefabsPoolSize + _startDisplayIndex;
             LoadData();

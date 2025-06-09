@@ -92,6 +92,7 @@ public class BattleCharacterDisplayManager : MonoBehaviour
 
     public void ChoiceCharacter(bool player, Action<int> onChoosen)
     {
+        InputManager.Instance.ChangeMapping(InputMapEnum.CharacterSelection);
         _playerChoose = player;
         _onChoosen = onChoosen;
         if (player) playerDisplay.Focus();

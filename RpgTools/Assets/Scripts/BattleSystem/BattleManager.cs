@@ -28,6 +28,8 @@ public class BattleManager : MonoBehaviour
     private Queue<PlayerCharacter> _playerTurnQueue;
     private Queue<Enemy> _enemyTurnQueue;
 
+    private bool _inBattle = false;
+
 
     //test data
     [SerializeField]
@@ -36,22 +38,35 @@ public class BattleManager : MonoBehaviour
     [SerializeField]
     private List<CharacterScriptableObject> playerlist;
 
+    public static BattleManager Instance = null;
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(this);
+    }
+
     private void Start()
     {
         characterDisplayManager = PlayerMenuManager.Instance.GetBattleMenuManger();
         //LoadBattle(encouter);
     }
 
+    public bool InBattle()
+    {
+        return _inBattle;
+    }
+
     private void DisplayBattleMessage(string message, Action onMessageEnded)
     {
         playerTurnManager.DisableMenu();
 
-        Action onMessageEnd = ()=> {
+        Action onMessageEnd = () => {
             playerTurnManager.EnableMenu();
             onMessageEnded();
-            };
+        };
 
-        DialogManager.Instance.ShowSimpleMessage(message, onMessageEnd);    
+        DialogManager.Instance.ShowSimpleMessage(message, onMessageEnd);
     }
 
     public void LoadBattle(EncounterScriptableObject encounter)
@@ -69,22 +84,24 @@ public class BattleManager : MonoBehaviour
             for (int i = 0; i < encounterMonster.amount; i++)
             {
                 Enemy enemy = new Enemy(encounterMonster.enemyData);
-                if (encounterMonster.amount > 1) enemy.Name = $"{encounterMonster.enemyData.Name} {i+1}";
+                if (encounterMonster.amount > 1) enemy.Name = $"{encounterMonster.enemyData.Name} {i + 1}";
                 else enemy.Name = encounterMonster.enemyData.Name;
-                _enemyList.Add(enemy); 
+                _enemyList.Add(enemy);
             }
         }
         _playerList = PlayerDataManager.Instance.GetPlayers();
 
         SetCharactersListeners();
 
-         characterDisplayManager.LoadPlayers(_playerList);
+        characterDisplayManager.LoadPlayers(_playerList);
         characterDisplayManager.LoadEnemies(_enemyList);
 
         _playerTurnQueue = new Queue<PlayerCharacter>();
         _enemyTurnQueue = new Queue<Enemy>();
 
         InputManager.Instance.ChangeMapping(InputMapEnum.Battle);
+
+        _inBattle = true;
 
         updateCoroutine = UpdateBattle();
         StartCoroutine(updateCoroutine);
@@ -113,7 +130,6 @@ public class BattleManager : MonoBehaviour
 
             _enemyList[i].AddEffectGainListener((DamageTypeEnum effect) =>
             {
-                Debug.Log("new debuff");
                 _newEffectsInfo.Enqueue(new EffectInfo(false, index, effect));
             });
 
@@ -143,7 +159,7 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator UpdateBattle()
     {
-        while (_playerTurnQueue.Count == 0 && _enemyTurnQueue.Count == 0) 
+        while (_playerTurnQueue.Count == 0 && _enemyTurnQueue.Count == 0)
         {
             yield return new WaitForSeconds(tickValue);
 
@@ -166,21 +182,21 @@ public class BattleManager : MonoBehaviour
 
     private void ResolveTurns()
     {
-        if(_removedEffectsInfo.Count > 0)
+        if (_removedEffectsInfo.Count > 0)
         {
             ResolveRemovedEffectsInfo();
             return;
         }
-        if(_newEffectsInfo.Count > 0)
+        if (_newEffectsInfo.Count > 0)
         {
             ResolveNewEffectsInfo();
             return;
         }
-        if(_playerTurnQueue.Count > 0) 
+        if (_playerTurnQueue.Count > 0)
         {
             ResolvePlayerTurnQueue();
         }
-        else if(_enemyTurnQueue.Count > 0)
+        else if (_enemyTurnQueue.Count > 0)
         {
             ResolveEnemyQueue();
         }
@@ -193,10 +209,10 @@ public class BattleManager : MonoBehaviour
 
     private void ResolveNewEffectsInfo()
     {
-        if(_newEffectsInfo.Count == 0)
+        if (_newEffectsInfo.Count == 0)
         {
             ResolveTurns();
-            return; 
+            return;
         }
         EffectInfo data = _newEffectsInfo.Dequeue();
         string info = "";
@@ -230,8 +246,8 @@ public class BattleManager : MonoBehaviour
 
     private void ResolvePlayerTurnQueue()
     {
-        if (_playerTurnQueue.Count == 0)return;
-        
+        if (_playerTurnQueue.Count == 0) return;
+
         PlayerCharacter player = _playerTurnQueue.Dequeue();
         if (!player.CanStartTurn())
         {
@@ -282,7 +298,7 @@ public class BattleManager : MonoBehaviour
 
         DisplayBattleMessage($"{enemy.Name} u¿ywa {action.Name}", () =>
         {
-            enemy.ChooseTargetAndResolveAction(action, _enemyList.Select(x => (Character)x).ToList(), _playerList.Select(x => (Character)x).ToList(), ()=> { EndEnemyTurn(enemy); });
+            enemy.ChooseTargetAndResolveAction(action, _enemyList.Select(x => (Character)x).ToList(), _playerList.Select(x => (Character)x).ToList(), () => { EndEnemyTurn(enemy); });
         });
     }
 
@@ -312,10 +328,23 @@ public class BattleManager : MonoBehaviour
                 EndPlayerTurn(player);
             });
         }
-        else if (actionType == PlayerActionTypeEnum.Skill) 
+        else if (actionType == PlayerActionTypeEnum.Item)
+        {
+            InventoryUIManager.Instance.ShowInventory((bool used)=>OnItemUsed(used, player));
+        }
+        else if (actionType == PlayerActionTypeEnum.Skill)
         {
             player.ChooseTargetAndResolveAction(action, _playerList.Select(x => (Character)x).ToList(), _enemyList.Select(x => (Character)x).ToList(), ResolveTurns);
         }
+    }
+
+    private void OnItemUsed(bool used, PlayerCharacter player)
+    {
+        if (used)
+        {
+            EndPlayerTurn(player);
+        }
+        else LoadPlayerMenu(player);
     }
 
     private void EndPlayerTurn(PlayerCharacter player) 

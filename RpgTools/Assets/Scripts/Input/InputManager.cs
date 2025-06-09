@@ -39,6 +39,9 @@ public class InputManager : MonoBehaviour
             case InputMapEnum.Battle:
                 name = "Battle";
                 break;
+            case InputMapEnum.Inventory:
+                name = "Inventory";
+                break;
             default:
                 name = "Player";
                 break;

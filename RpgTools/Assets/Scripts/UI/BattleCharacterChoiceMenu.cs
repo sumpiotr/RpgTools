@@ -5,12 +5,12 @@ public class BattleCharacterChoiceMenu : BaseChoiceMenuManager<CharacterChoiceDa
 {
     public void UpdateChoiceHealth(int index, int value)
     {
-        ((BattleCharacterChoice)_choices[index]).UpdateHealth(value);
+        ((BaseCharacterMenuChoice)_choices[index]).UpdateHealth(value);
     }
 
     public void UpdateChoiceEnergy(int index, int value)
     {
-        ((BattleCharacterChoice)_choices[index]).UpdateEnergy(value);
+        ((BaseCharacterMenuChoice)_choices[index]).UpdateEnergy(value);
     }
 
     public void UpdateChoicesInitiative(float value)

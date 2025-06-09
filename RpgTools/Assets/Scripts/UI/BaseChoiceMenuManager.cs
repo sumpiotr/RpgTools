@@ -122,6 +122,7 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
 
     public virtual void Unfocus()
     {
+        if (selected == null) return;
         selected.DeSelect();
         selected = null;
         collumnIndex = 0;
@@ -135,6 +136,7 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
 
     public virtual int GetSelectedIndex()
     {
+        if (selected == null) return -1;
         return selected.Index;
     }
 

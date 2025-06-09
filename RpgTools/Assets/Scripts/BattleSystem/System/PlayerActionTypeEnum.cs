@@ -4,5 +4,6 @@ public enum PlayerActionTypeEnum
 {
     BaseAttack,
     Skill,
-    Guard
+    Item,
+    Guard,
 }
