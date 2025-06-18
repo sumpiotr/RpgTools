@@ -233,7 +233,7 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
             if (reading.x > 0) NextCollumn();
             else PreviousCollumn();
         }
-        if (onHover != null) onHover(selected.Index);
+        if (onHover != null) onHover(selected == null ? -1 : selected.Index);
     }
 
 }

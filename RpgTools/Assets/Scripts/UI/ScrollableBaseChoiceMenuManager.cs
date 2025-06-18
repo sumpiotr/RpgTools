@@ -59,6 +59,7 @@ public abstract class ScrollableBaseChoiceMenuManager<T> : BaseChoiceMenuManager
 
     public override int GetSelectedIndex()
     {
+        if (selected == null) return -1;
         return selected.Index + _startDisplayIndex;
     }
 

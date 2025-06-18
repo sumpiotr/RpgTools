@@ -50,14 +50,14 @@ public class DialogManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(this);
+        dialogText.gameObject.SetActive(true);
+        dialogUI.SetActive(false);
+        dialogChoicesManager.gameObject.SetActive(false);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        dialogText.gameObject.SetActive(true);
-        dialogUI.SetActive(false);
-        dialogChoicesManager.gameObject.SetActive(false);
     }
 
     public void StartDialog(string data, Action onEnded)
@@ -85,12 +85,10 @@ public class DialogManager : MonoBehaviour
     private void StartDialog(Story story, Action onEnded)
     {
         if (_currentStory != null) return;
-
         _previousInput = InputManager.Instance.GetInputMap();
         InputManager.Instance.ChangeMapping(InputMapEnum.Dialog);
 
         dialogUI.SetActive(true);
-
         _currentStory = story;
         onDialogEnded = onEnded;
         SetFunctions(_currentStory.globalTags);
@@ -113,6 +111,54 @@ public class DialogManager : MonoBehaviour
                         SetPortrait(name);
                     });
                 }
+                else if(functionName == "AddItem")
+                {
+                    _currentStory.BindExternalFunction(functionName, (string name) => {
+                        AddItem(name);
+                    });
+                }
+                else if (functionName == "RemoveItem")
+                {
+                    _currentStory.BindExternalFunction(functionName, (string name) => {
+                        InventoryManager.Instance.RemoveItem(name);
+                    });
+                }
+                else if (functionName == "AddItems")
+                {
+                    _currentStory.BindExternalFunction(functionName, (string name, int count) => {
+                        InventoryManager.Instance.AddItems(name, count);
+                    });
+                }
+                else if(functionName == "HasItem")
+                {
+                    _currentStory.BindExternalFunction(functionName, (string name) => {
+                        return InventoryManager.Instance.HasItem(name);
+                    });
+                }
+                else if (functionName == "ChangeMusic")
+                {
+                    _currentStory.BindExternalFunction(functionName, (string name) => {
+                        MusicManager.Instance.PlayMusic(name);
+                    });
+                }
+                else if (functionName == "SetVar")
+                {
+                    _currentStory.BindExternalFunction(functionName, (string name, int value) => {
+                        DialogStatesManager.Instance.SetVariable(name, value);
+                    });
+                }
+                else if (functionName == "GetVar")
+                {
+                    _currentStory.BindExternalFunction(functionName, (string name) => {
+                        return DialogStatesManager.Instance.GetVariable(name);
+                    });
+                }
+                else if (functionName == "PlayCutscene")
+                {
+                    _currentStory.BindExternalFunction(functionName, (string name) => {
+                        CutscenesManager.Instance.PlayCutscene(name);
+                    });
+                }
             }
         }
     }
@@ -125,7 +171,6 @@ public class DialogManager : MonoBehaviour
             EndDialog();
             return;
         }
-
         string text = _currentStory.Continue();
 
         if(_currentStory.currentChoices.Count > 0) 
@@ -160,6 +205,7 @@ public class DialogManager : MonoBehaviour
         _currentStory = null;
         dialogUI.SetActive(false);
         InputManager.Instance.ChangeMapping(_previousInput);
+        SetPortrait("");
         if(onDialogEnded != null)
         {
             onDialogEnded();
@@ -195,10 +241,23 @@ public class DialogManager : MonoBehaviour
         dialogChoicesManager.SelectionMove(context);
     }
 
+    #region External Functions
     private void SetPortrait(string name)
     {
+        portrait.gameObject.SetActive(name != "");
+        if (name == "") return;
         portrait.sprite = Resources.Load<Sprite>($"Images/{name}");
+        portrait.preserveAspect = true;
     }
+
+
+    private void AddItem(string name)
+    {
+        InventoryManager.Instance.AddItem(name);    
+    }
+
+    #endregion
+
 
     private IEnumerator TextAnimationCoroutine(string text)
     {

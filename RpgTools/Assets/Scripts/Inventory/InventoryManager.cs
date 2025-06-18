@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -10,8 +11,6 @@ public class InventoryManager : MonoBehaviour
 
     public static InventoryManager Instance = null;
 
-    [SerializeField]
-    private List<BaseItemScriptableObject> _startItems;
 
     private void Awake()
     {
@@ -23,16 +22,32 @@ public class InventoryManager : MonoBehaviour
 
     private void Start()
     {
-        foreach(BaseItemScriptableObject item in _startItems)
-        {
-            AddItem(item);
-        }
+        AddItem("Potion");
     }
 
     public void AddItem(string item)
     {
         BaseItemScriptableObject itemData = Resources.Load<BaseItemScriptableObject>($"Items/{item}");
         AddItem(itemData);
+    }
+
+    public void AddItems(string item, int count)
+    {
+        BaseItemScriptableObject itemData = Resources.Load<BaseItemScriptableObject>($"Items/{item}");
+        AddItems(itemData, count);
+    }
+
+    public void AddItems(BaseItemScriptableObject itemData, int count)
+    {
+        if (itemData != null)
+        {
+            if (itemData.Type == ItemType.Item)
+            {
+                if (_items.ContainsKey(itemData)) _items[itemData] += count;
+                else _items[itemData] = count;
+            }
+            else { for(int i = 0; i < count; i++)_keyItems.Add(itemData); }
+        }
     }
 
 
@@ -47,6 +62,31 @@ public class InventoryManager : MonoBehaviour
             }
             else _keyItems.Add(itemData);
         }
+    }
+
+    public void RemoveItem(string item)
+    {
+        BaseItemScriptableObject itemData = Resources.Load<BaseItemScriptableObject>($"Items/{item}");
+        RemoveItem(itemData);
+    }
+
+    public void RemoveItem(BaseItemScriptableObject itemData)
+    {
+        if (_items.ContainsKey(itemData))
+        {
+            _items.Remove(itemData);
+        }
+        else if (_keyItems.Contains(itemData))
+        {
+            _keyItems.Remove(itemData);
+        }
+    }
+
+    public bool HasItem(string name)
+    {
+        BaseItemScriptableObject itemData = Resources.Load<BaseItemScriptableObject>($"Items/{name}");
+        if (_items.ContainsKey(itemData)) return _items[itemData] > 0;
+        return _keyItems.Contains(itemData);
     }
 
     public void UseItem(BaseItemScriptableObject item, Action<bool> onItemUsed)
@@ -71,6 +111,7 @@ public class InventoryManager : MonoBehaviour
             }, $"{item.name} x{_items[item]}");
         }
     }
+
 
     private void OnItemTargetChoosen(ActionItemScriptableObject item, int targetIndex, Action<bool> onItemUsed)
     {

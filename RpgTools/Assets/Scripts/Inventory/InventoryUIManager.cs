@@ -52,7 +52,7 @@ public class InventoryUIManager : MonoBehaviour
         _items = InventoryManager.Instance.GetNormalItems();
         inventoryUI.SetActive(true);
         itemChoiceMenu.LoadChoices(_items.Select(x => $"{x.Data.Name} x{x.Count}").ToList());
-        itemChoiceMenu.Focus();
+        if(_items.Count > 0)itemChoiceMenu.Focus();
         _previousInputMap = InputManager.Instance.GetInputMap();
         InputManager.Instance.ChangeMapping(InputMapEnum.Inventory);
     }
@@ -75,6 +75,7 @@ public class InventoryUIManager : MonoBehaviour
     public void OnConfirm(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
+        if (itemChoiceMenu.GetSelectedIndex() == -1) return;
         BaseItemScriptableObject item = _items[itemChoiceMenu.GetSelectedIndex()].Data;
         CloseInventory();
         InventoryManager.Instance.UseItem(item, _onItemUsed);
