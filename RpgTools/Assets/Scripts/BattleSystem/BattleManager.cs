@@ -3,13 +3,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
 
     [SerializeField]
     private GameObject battleUI;
+
+    [SerializeField]
+    private Image fadeImage;        
+    private const float fadeDuration = 1f;       
 
     [SerializeField]
     private PlayerTurnMenuManager playerTurnManager;
@@ -29,6 +36,8 @@ public class BattleManager : MonoBehaviour
     private Queue<Enemy> _enemyTurnQueue;
 
     private bool _inBattle = false;
+
+    public Action<PlayerCharacter> OnPlayerTurnEnd { get; set; }
 
 
     //test data
@@ -57,6 +66,16 @@ public class BattleManager : MonoBehaviour
         return _inBattle;
     }
 
+    public void EnableMenu()
+    {
+        playerTurnManager.EnableMenu();
+    }
+
+    public void DisableMenu()
+    {
+        playerTurnManager.DisableMenu();
+    }
+
     private void DisplayBattleMessage(string message, Action onMessageEnded)
     {
         playerTurnManager.DisableMenu();
@@ -69,9 +88,9 @@ public class BattleManager : MonoBehaviour
         DialogManager.Instance.ShowSimpleMessage(message, onMessageEnd);
     }
 
-    public void LoadBattle(EncounterScriptableObject encounter)
+    public void LoadBattle(EncounterScriptableObject encounter, List<PlayerCharacter> playerlist, Action onLoaded=null)
     {
-        battleUI.SetActive(true);
+        
 
         PlayerMenuManager.Instance.SetInBattle(true);
 
@@ -89,12 +108,9 @@ public class BattleManager : MonoBehaviour
                 _enemyList.Add(enemy);
             }
         }
-        _playerList = PlayerDataManager.Instance.GetPlayers();
+        _playerList = playerlist;
 
         SetCharactersListeners();
-
-        characterDisplayManager.LoadPlayers(_playerList);
-        characterDisplayManager.LoadEnemies(_enemyList);
 
         _playerTurnQueue = new Queue<PlayerCharacter>();
         _enemyTurnQueue = new Queue<Enemy>();
@@ -102,7 +118,67 @@ public class BattleManager : MonoBehaviour
         InputManager.Instance.ChangeMapping(InputMapEnum.Battle);
 
         _inBattle = true;
+        if(onLoaded == null)
+        {
+            onLoaded = StartBattle;
+        }
 
+        IEnumerator transition = Transition(onLoaded);
+        StartCoroutine(transition);
+    }
+
+    public void LoadBattle(EncounterScriptableObject encounter, Action onLoaded=null)
+    {
+        LoadBattle(encounter, PlayerDataManager.Instance.GetPlayers(), onLoaded);
+    }
+
+    private void LoadBattleScreen()
+    {
+        battleUI.SetActive(true);
+        characterDisplayManager.LoadPlayers(_playerList);
+        characterDisplayManager.LoadEnemies(_enemyList);
+    }
+
+
+    private IEnumerator Transition(Action onLoaded)
+    {
+        float t = 0f;
+        Color c = fadeImage.color;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            c.a = Mathf.Lerp(0f, 1f, t / fadeDuration); ;
+            fadeImage.color = c; 
+            yield return new  WaitForSeconds(Time.deltaTime);
+        }
+        c.a = 1;
+        fadeImage.color = c;
+
+        LoadBattleScreen();
+
+        t = 0f;
+        c = fadeImage.color;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            c.a = Mathf.Lerp(1f, 0f, t / fadeDuration);
+            fadeImage.color = c;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        c.a = 0;
+        fadeImage.color = c;
+
+        Debug.Log(_playerList[0].GetInitiative());
+        yield return new WaitForSeconds(fadeDuration);
+
+        onLoaded();
+    }
+
+
+
+    public void StartBattle()
+    {
+        if (!_inBattle) return;
         updateCoroutine = UpdateBattle();
         StartCoroutine(updateCoroutine);
     }
@@ -350,6 +426,7 @@ public class BattleManager : MonoBehaviour
     private void EndPlayerTurn(PlayerCharacter player) 
     {
         player.EndTurn();
+        if(OnPlayerTurnEnd != null)OnPlayerTurnEnd.Invoke(player);
         ResolveTurns();
     }
 

@@ -244,7 +244,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.439
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1430,7 +1430,6 @@ MonoBehaviour:
   selection: {fileID: 818478528453840223}
   Index: 0
   image: {fileID: 8759257438415089946}
-  nameText: {fileID: 0}
   healthSlider: {fileID: 817914271036916906}
   energySlider: {fileID: 8476373722743321829}
   choiceContainer: {fileID: 4253509870901750358}

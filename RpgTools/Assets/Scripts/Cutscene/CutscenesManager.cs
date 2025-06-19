@@ -1,13 +1,21 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 public class CutscenesManager : MonoBehaviour
 {
-    [SerializeField]
-    private BoxCollider2D playerCollider;
 
     [SerializeField]
     private LoadSceneEventScriptableObject _changeSceneEvent;
+
+    private int _eventIndex;
+
+    public static CutscenesManager Instance;
+
+    [Header("Start Scene")]
+
+    [SerializeField]
+    private BoxCollider2D playerCollider;
 
     [SerializeField]
     private SceneAsset _startScene;
@@ -15,7 +23,15 @@ public class CutscenesManager : MonoBehaviour
     [SerializeField]
     private TextAsset _startDialog;
 
-    public static CutscenesManager Instance;
+    [Header("Tutorial")]
+    [SerializeField]
+    private EncounterScriptableObject tutorialEncounter;
+    [SerializeField]
+    private CharacterScriptableObject tutorialAliceData;
+    [SerializeField]
+    private TextAsset tutorialDialog;
+
+
 
     private void Awake()
     {
@@ -25,7 +41,7 @@ public class CutscenesManager : MonoBehaviour
 
     void Start()
     {
-        StartCutscene();
+        //StartCutscene();
     }
 
     private void StartCutscene()
@@ -47,6 +63,10 @@ public class CutscenesManager : MonoBehaviour
         {
             GuardCutscene();
         }
+        else if(name == "Tutorial")
+        {
+            Tutorial();
+        }
     }
 
     private void GuardCutscene()
@@ -57,4 +77,24 @@ public class CutscenesManager : MonoBehaviour
             guard.transform.position = new Vector3(2.7f, 9.9f, 0);
         }
     }
+
+    #region Tutorial
+
+    private void Tutorial()
+    {
+        _eventIndex = 0;
+        List<PlayerCharacter> battlePlayers = new List<PlayerCharacter>();
+        battlePlayers.Add(new PlayerCharacter(tutorialAliceData));
+        PlayerMenuManager.Instance.SetPlayerListeners(battlePlayers[0], 0);
+        BattleManager.Instance.LoadBattle(tutorialEncounter, () => {
+            DialogManager.Instance.StartDialog(tutorialDialog.text, () => { BattleManager.Instance.StartBattle(); });
+        });
+    }
+
+    private void TutorialEvents()
+    {
+
+    }
+
+    #endregion
 }

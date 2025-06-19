@@ -229,6 +229,11 @@ public class Character
         return _currentStats[stat];
     }
 
+    public float GetInitiative()
+    {
+        return _initiative;
+    }
+
     public int GetTotalStatValue(CharacterStatsEnum stat)
     {
         return _currentStats[stat] + _boofsValues[stat];

@@ -71,6 +71,19 @@ public class PlayerMenuManager : MonoBehaviour
         if(!battle)characterMenu.SetTitle(title);
     }
 
+    public void SetPlayerListeners(PlayerCharacter player, int index)
+    {
+        player.AddHealthListener(() =>
+        {
+            UpdateHealthbar(index, player.GetCurrentStatValue(CharacterStatsEnum.Health));
+        });
+
+        player.AddEnergyListener(() =>
+        {
+            UpdateEnergybar(index, player.GetCurrentStatValue(CharacterStatsEnum.Energy));
+        });
+    }
+
     public void ShowPlayerMenu(string title)
     {
         if (battle) return;

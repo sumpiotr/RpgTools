@@ -8,6 +8,8 @@ public class PlayerDataManager : MonoBehaviour
 
     private List<PlayerCharacter> _players;
 
+    private List<PlayerCharacter> _activePlayers;
+
     public static PlayerDataManager Instance;
 
     private void Awake()
@@ -16,6 +18,7 @@ public class PlayerDataManager : MonoBehaviour
         else Destroy(this);
 
         _players = new List<PlayerCharacter>();
+        _activePlayers = new List<PlayerCharacter>();
         foreach (CharacterScriptableObject character in startCharacterData)
         {
             _players.Add(new PlayerCharacter(character));
@@ -34,21 +37,26 @@ public class PlayerDataManager : MonoBehaviour
         for(int i = 0; i < _players.Count; i++)
         {
             int index = i;
-            _players[i].AddHealthListener(() =>
-            {
-                PlayerMenuManager.Instance.UpdateHealthbar(index, _players[index].GetCurrentStatValue(CharacterStatsEnum.Health));
-            });
-
-            _players[i].AddEnergyListener(() =>
-            {
-                PlayerMenuManager.Instance.UpdateEnergybar(index, _players[index].GetCurrentStatValue(CharacterStatsEnum.Energy));
-            });
+            PlayerMenuManager.Instance.SetPlayerListeners(_players[i], i);
+            if (_players[i].GetCharacterData().name == "Fex")_activePlayers.Add(_players[i]);
         }
     }
 
     public List<PlayerCharacter> GetPlayers() 
     { 
-        return _players;
+        return _activePlayers;
+    }
+
+    public void AddActivePlayer(CharacterScriptableObject playerData)
+    {
+        foreach (PlayerCharacter character in _players)
+        {
+            if(character.GetCharacterData() == playerData)
+            {
+                _activePlayers.Add(character);
+                return;
+            }
+        }
     }
    
 }

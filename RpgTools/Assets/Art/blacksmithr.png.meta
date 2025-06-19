@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      blacksmithr_0: 6512602442362563667
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

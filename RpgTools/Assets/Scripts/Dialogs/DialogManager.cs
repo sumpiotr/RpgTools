@@ -85,6 +85,8 @@ public class DialogManager : MonoBehaviour
     private void StartDialog(Story story, Action onEnded)
     {
         if (_currentStory != null) return;
+        if(BattleManager.Instance.InBattle())BattleManager.Instance.DisableMenu();
+
         _previousInput = InputManager.Instance.GetInputMap();
         InputManager.Instance.ChangeMapping(InputMapEnum.Dialog);
 
@@ -135,7 +137,7 @@ public class DialogManager : MonoBehaviour
                         return InventoryManager.Instance.HasItem(name);
                     });
                 }
-                else if (functionName == "ChangeMusic")
+                else if (functionName == "PlayMusic")
                 {
                     _currentStory.BindExternalFunction(functionName, (string name) => {
                         MusicManager.Instance.PlayMusic(name);
@@ -206,7 +208,8 @@ public class DialogManager : MonoBehaviour
         dialogUI.SetActive(false);
         InputManager.Instance.ChangeMapping(_previousInput);
         SetPortrait("");
-        if(onDialogEnded != null)
+        if (BattleManager.Instance.InBattle()) BattleManager.Instance.EnableMenu();
+        if (onDialogEnded != null)
         {
             onDialogEnded();
             //onDialogEnded = null;
