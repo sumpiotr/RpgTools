@@ -17,9 +17,10 @@ public class PlayerTurnMenuManager : MonoBehaviour
 
 
 
-    private Dictionary<string, Action> _mainMenu;
+    private Dictionary<string, Action> _mainMenuActionsDictionary;
     private List<string> _mainMenuTips;
     private Menu _skillsMenu;
+    private Menu mainMenu;
 
     private Stack<Menu> _menuStack;
 
@@ -28,23 +29,24 @@ public class PlayerTurnMenuManager : MonoBehaviour
     private void Start()
     {
         _menuStack = new Stack<Menu>();
-        _mainMenu = new Dictionary<string, Action>();
+        _mainMenuActionsDictionary = new Dictionary<string, Action>();
         _mainMenuTips = new List<string>();
-        _mainMenu.Add("Attack", () =>
+        _mainMenuActionsDictionary.Add("Attack", () =>
         {
             _onActionChoosen(PlayerActionTypeEnum.BaseAttack, null);
         });
         _mainMenuTips.Add("Podstawowy Atak. Odnawia troche energi");
-        _mainMenu.Add("Skill", () => { SetupMenu(_skillsMenu); });
+        _mainMenuActionsDictionary.Add("Skill", () => { SetupMenu(_skillsMenu); });
         _mainMenuTips.Add("U¿yj umiejêtnoœci");
-        _mainMenu.Add("Use Item", ShowItemMenu);
+        _mainMenuActionsDictionary.Add("Use Item", ShowItemMenu);
         _mainMenuTips.Add("U¿yj przedmiotu");
-        _mainMenu.Add("Guard", () =>
+        _mainMenuActionsDictionary.Add("Guard", () =>
         {
             _onActionChoosen.Invoke(PlayerActionTypeEnum.Guard, null);
         });
         _mainMenuTips.Add("Zablokuj po³owe nadchodz¹cych obra¿eñ");
 
+        mainMenu = new Menu(_mainMenuActionsDictionary.Keys.ToList(), _mainMenuTips, (BaseChoiceMenu<string> x) => { _mainMenuActionsDictionary[x.GetData()].Invoke(); });
 
         battleChoiceMenuManager.SetOnHover(OnMenuHover);
     }
@@ -102,12 +104,13 @@ public class PlayerTurnMenuManager : MonoBehaviour
         });
 
 
-        SetupMenu(new Menu(_mainMenu.Keys.ToList(), _mainMenuTips, (BaseChoiceMenu<string> x) => { _mainMenu[x.GetData()].Invoke(); }));
+        SetupMenu(mainMenu);
     }
 
     private void SetupMenu(Menu menu)
     {
         _menuStack.Push(menu);
+        //battleChoiceMenuManager.Unfocus();
         battleChoiceMenuManager.LoadChoices(menu.items.Select(x=>x.text).ToList());
 
         for (int i = 0; i < menu.items.Count; i++){
@@ -116,6 +119,16 @@ public class PlayerTurnMenuManager : MonoBehaviour
         }
         
         battleChoiceMenuManager.Focus();
+    }
+
+    public void DisableMainMenuOption(string name)
+    {
+        mainMenu.DisableOption(name);
+    }
+
+    public void EnableMainMenuOption(string name)
+    {
+        mainMenu.EnableOption(name);
     }
 
     private void ShowItemMenu()
@@ -164,9 +177,33 @@ struct Menu
         }
         this.onMenuItemConfirmed = onMenuItemConfirmed;
     }
+
+    public void DisableOption(string name)
+    {
+        foreach(MenuItem item in items)
+        {
+            if(item.text == name)
+            {
+                item.enabled = false;
+                return;
+            }
+        }
+    }
+
+    public void EnableOption(string name)
+    {
+        foreach (MenuItem item in items)
+        {
+            if (item.text == name)
+            {
+                item.enabled = true;
+                return;
+            }
+        }
+    }
 }
 
-struct MenuItem
+class MenuItem
 {
     public string text;
     public string tip;

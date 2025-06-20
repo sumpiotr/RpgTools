@@ -9,7 +9,6 @@ public class MenuChoice : BaseChoiceMenu<string>
 
     public void DisableData()
     {
-        Debug.Log(textUI.text);
         textUI.color = Color.red;
     }
 

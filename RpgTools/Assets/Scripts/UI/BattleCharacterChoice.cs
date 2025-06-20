@@ -22,7 +22,7 @@ public class BattleCharacterChoice : BaseCharacterMenuChoice
     public void UpdateInitiative(float newValue)
     {
        CurrentInitiativeValue += newValue;
-       if(CurrentInitiativeValue > _characterData.Speed)CurrentInitiativeValue -= _characterData.Speed;
+       if(CurrentInitiativeValue > _characterData.Speed)CurrentInitiativeValue = 0;
        initiativeSlider.value = CurrentInitiativeValue / _characterData.Speed;
     }
 

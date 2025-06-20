@@ -34,7 +34,7 @@ public class Character
     const float fireMultiplier = 0.1f;
     const int electricityChance = 30;
 
-    const int minBaseEffectDuration = 1;
+    const int minBaseEffectDuration = 2;
     const int maxBaseEffectDuration = 3;
 
     const int knockoutDuration = 1;
@@ -83,6 +83,11 @@ public class Character
     public void AddHealthListener(Action onHealthChange)
     {
         _onHealthChange += onHealthChange;
+    }
+
+    public void SetHealthListener(Action onHealthChange)
+    {
+        _onHealthChange = onHealthChange;
     }
 
     public void AddEffectGainListener(Action<DamageTypeEnum> onEffectGained)
@@ -166,7 +171,9 @@ public class Character
         }
         if (_effects.Contains(DamageTypeEnum.Electricity))
         {
+            Debug.Log(Random.Range(1, 101));
             if (Random.Range(1, 101) <= electricityChance) {
+                Debug.Log("parali¿");
                 playTurn = false;
                 //if (_showMessage != null) _showMessage($"{_characterData.Name} jest sparali¿owany");
             }
@@ -227,6 +234,12 @@ public class Character
     public int GetCurrentStatValue(CharacterStatsEnum stat)
     {
         return _currentStats[stat];
+    }
+
+    public virtual void SetCurrentStatValue(CharacterStatsEnum stat, int value)
+    {
+        _currentStats[stat] = value;
+        if (stat == CharacterStatsEnum.Health && _onHealthChange != null) _onHealthChange();
     }
 
     public float GetInitiative()

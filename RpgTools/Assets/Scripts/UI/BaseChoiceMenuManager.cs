@@ -70,6 +70,7 @@ public abstract class BaseChoiceMenuManager<T> : MonoBehaviour
         if (_choices == null || _choices.Count == 0) GeneratePrefabs();
         collumnIndex = 0;
         _dataChoices = choices;
+        Unfocus();
         LoadData();
     }
 

@@ -64,13 +64,13 @@ public class Enemy : Character
         if (_enemyData.weaknesses.Contains(damageType))
         {
             attackDamage = GetMultipliedValue(attackDamage, weaknessDamageMultiplier);
-            effectChance = GetMultipliedValue(attackDamage, weaknessEffectChanceMultiplier);
+            effectChance = GetMultipliedValue(effectChance, weaknessEffectChanceMultiplier);
             if (_onWeaknessHitted != null) _onWeaknessHitted();
         }
         else if (_enemyData.resistances.Contains(damageType)) 
         {
             attackDamage = GetMultipliedValue(attackDamage, resistanceDamageMultiplier);
-            effectChance = GetMultipliedValue(attackDamage, resistanceEffectChanceMultiplier);
+            effectChance = GetMultipliedValue(effectChance, resistanceEffectChanceMultiplier);
             if (_onResistanceHitted != null) _onResistanceHitted();
         }
         base.TakeDamage(attackDamage, damageType, effectChance);

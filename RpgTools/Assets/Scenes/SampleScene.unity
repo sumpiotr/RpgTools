@@ -868,6 +868,7 @@ MonoBehaviour:
   battleUI: {fileID: 1248561191}
   fadeImage: {fileID: 1712512068}
   playerTurnManager: {fileID: 1760964314}
+  battleMusic: {fileID: 8300000, guid: 5d221fd15b6000544a72e8dca0073d9e, type: 3}
   encouter: {fileID: 11400000, guid: 1ea0ab4925e26ca4db29ca0fb5a1be78, type: 2}
   playerlist:
   - {fileID: 11400000, guid: 157bbae6380be834fa7d3f74566b736d, type: 2}
@@ -1246,8 +1247,6 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420034}
-  - component: {fileID: 519420036}
-  - component: {fileID: 519420035}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1367,7 +1366,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.49, y: 0.98, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1386,54 +1385,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 2147341999}
---- !u!54 &519420035
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!65 &519420036
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 23.68254, y: 9.989254, z: 0.1}
-  m_Center: {x: 0.00595665, y: -0.015122414, z: 0}
 --- !u!1 &525632855
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,9 +1588,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 689886076}
   - {fileID: 1248561192}
   - {fileID: 1712512066}
+  - {fileID: 689886076}
   - {fileID: 319222493}
   - {fileID: 1834656634}
   m_Father: {fileID: 0}
@@ -2995,8 +2946,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4571828015118065507, guid: a97e1fd2402b6bc4c852f549649101f0, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 3414367906210621945, guid: 2a2b7005b0751c14dba5235ece7e265e, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4280,10 +4231,11 @@ MonoBehaviour:
   _changeSceneEvent: {fileID: 11400000, guid: ea1dfb26c920c4d4581a82be6ea158b9, type: 2}
   playerCollider: {fileID: 2147342002}
   _startScene: {fileID: 102900000, guid: e99ba3f039e01564fbbed5ff9d1ee18f, type: 3}
+  _debuggingScene: {fileID: 102900000, guid: 5e4100c989dce814983e6cf778ccc2da, type: 3}
   _startDialog: {fileID: 4900000, guid: 12ba505d093692a43a2472cf91495e4a, type: 3}
-  tutorialEncounter: {fileID: 0}
-  tutorialAliceData: {fileID: 0}
-  tutorialDialog: {fileID: 0}
+  tutorialEncounter: {fileID: 11400000, guid: 5a7470f551139274aab8b92b02b31815, type: 2}
+  tutorialAliceData: {fileID: 11400000, guid: 3c34a5d50494f9c41b5b7d20896c553b, type: 2}
+  tutorialDialog: {fileID: 4900000, guid: a62f4c98998383c42804f096b354ba5a, type: 3}
 --- !u!1 &1812126998
 GameObject:
   m_ObjectHideFlags: 0

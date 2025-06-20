@@ -16,10 +16,14 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField]
     private Image fadeImage;        
-    private const float fadeDuration = 1f;       
+    private const float fadeDuration = 1f;    
+    
 
     [SerializeField]
     private PlayerTurnMenuManager playerTurnManager;
+
+    [SerializeField]
+    private AudioClip battleMusic;
 
     private BattleCharacterDisplayManager characterDisplayManager;
 
@@ -38,6 +42,7 @@ public class BattleManager : MonoBehaviour
     private bool _inBattle = false;
 
     public Action<PlayerCharacter> OnPlayerTurnEnd { get; set; }
+    public Action OnBattleWin { get; set; }
 
 
     //test data
@@ -49,10 +54,12 @@ public class BattleManager : MonoBehaviour
 
     public static BattleManager Instance = null;
 
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(this);
+        OnPlayerTurnEnd = null;
     }
 
     private void Start()
@@ -88,17 +95,31 @@ public class BattleManager : MonoBehaviour
         DialogManager.Instance.ShowSimpleMessage(message, onMessageEnd);
     }
 
+    public void DisableMainMenuOption(string name)
+    {
+        playerTurnManager.DisableMainMenuOption(name);
+    }
+
+    public void EnableMainMenuOption(string name)
+    {
+        playerTurnManager.EnableMainMenuOption(name);
+    }
+
+    public void SetBattleMusic(AudioClip music)
+    {
+        battleMusic = music;
+    }
+
     public void LoadBattle(EncounterScriptableObject encounter, List<PlayerCharacter> playerlist, Action onLoaded=null)
     {
-        
-
+        MusicManager.Instance.PlayMusic(battleMusic);
         PlayerMenuManager.Instance.SetInBattle(true);
 
         _enemyList = new List<Enemy>();
         _newEffectsInfo = new Queue<EffectInfo>();
         _removedEffectsInfo = new Queue<EffectInfo>();
 
-        foreach (EncounterMonster encounterMonster in encouter.EnemyList)
+        foreach (EncounterMonster encounterMonster in encounter.EnemyList)
         {
             for (int i = 0; i < encounterMonster.amount; i++)
             {
@@ -168,7 +189,6 @@ public class BattleManager : MonoBehaviour
         c.a = 0;
         fadeImage.color = c;
 
-        Debug.Log(_playerList[0].GetInitiative());
         yield return new WaitForSeconds(fadeDuration);
 
         onLoaded();
@@ -192,18 +212,17 @@ public class BattleManager : MonoBehaviour
         _newEffectsInfo.Clear();
         _removedEffectsInfo.Clear();
         InputManager.Instance.ChangeMapping(InputMapEnum.Player);
+        OnPlayerTurnEnd = null;
+        MusicManager.Instance.PlayPreviousMusic();
+        if (OnBattleWin != null) OnBattleWin.Invoke();
     }
 
     private void SetCharactersListeners()
     {
+        SetEnemyHealthListeners();
         for (int i = 0; i < _enemyList.Count; i++)
         {
             int index = i;
-            _enemyList[i].AddHealthListener(() =>
-            {
-                characterDisplayManager.UpdateHealth(false, index, _enemyList[index].GetCurrentStatValue(CharacterStatsEnum.Health));
-            });
-
             _enemyList[i].AddEffectGainListener((DamageTypeEnum effect) =>
             {
                 _newEffectsInfo.Enqueue(new EffectInfo(false, index, effect));
@@ -233,6 +252,24 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    private void SetEnemyHealthListeners()
+    {
+        for(int i = 0; i < _enemyList.Count; i++)
+        {
+            int index = i;
+            _enemyList[i].SetHealthListener(() =>
+            {
+                int health = _enemyList[index].GetCurrentStatValue(CharacterStatsEnum.Health);
+                characterDisplayManager.UpdateHealth(false, index, health);
+                if (health <= 0) { 
+                    _enemyList.RemoveAt(index);
+                    SetEnemyHealthListeners();
+                    characterDisplayManager.LoadEnemies(_enemyList);
+                }
+            });
+        }
+    }
+
     private IEnumerator UpdateBattle()
     {
         while (_playerTurnQueue.Count == 0 && _enemyTurnQueue.Count == 0)
@@ -256,7 +293,7 @@ public class BattleManager : MonoBehaviour
         ResolveTurns();
     }
 
-    private void ResolveTurns()
+    public void ResolveTurns()
     {
         if (_removedEffectsInfo.Count > 0)
         {
@@ -268,6 +305,13 @@ public class BattleManager : MonoBehaviour
             ResolveNewEffectsInfo();
             return;
         }
+
+        if(_enemyList.Count == 0)
+        {
+            EndBattle();
+            return;
+        }
+
         if (_playerTurnQueue.Count > 0)
         {
             ResolvePlayerTurnQueue();
@@ -380,7 +424,7 @@ public class BattleManager : MonoBehaviour
 
     private void EndEnemyTurn(Character enemy)
     {
-        enemy.EndTurn();
+        if(enemy.GetInitiative() != 0)enemy.EndTurn();
         ResolveTurns();
     }
 
@@ -410,7 +454,7 @@ public class BattleManager : MonoBehaviour
         }
         else if (actionType == PlayerActionTypeEnum.Skill)
         {
-            player.ChooseTargetAndResolveAction(action, _playerList.Select(x => (Character)x).ToList(), _enemyList.Select(x => (Character)x).ToList(), ResolveTurns);
+            player.ChooseTargetAndResolveAction(action, _playerList.Select(x => (Character)x).ToList(), _enemyList.Select(x => (Character)x).ToList(), () => { EndPlayerTurn(player); });
         }
     }
 
@@ -425,9 +469,9 @@ public class BattleManager : MonoBehaviour
 
     private void EndPlayerTurn(PlayerCharacter player) 
     {
-        player.EndTurn();
+        if(player.GetInitiative() != 0)player.EndTurn();
         if(OnPlayerTurnEnd != null)OnPlayerTurnEnd.Invoke(player);
-        ResolveTurns();
+        else ResolveTurns();
     }
 
     private void ChooseTarget(PlayerCharacter currentPlayer, bool player, Action<int> onChoosen) 

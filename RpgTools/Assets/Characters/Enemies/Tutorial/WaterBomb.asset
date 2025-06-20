@@ -9,9 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59eda962dd9789244abd74c6aadd117a, type: 3}
-  m_Name: TestCounter
+  m_Script: {fileID: 11500000, guid: 9d6fa3f1cd6b95d45b95b4eadf6156cc, type: 3}
+  m_Name: WaterBomb
   m_EditorClassIdentifier: 
-  EnemyList:
-  - enemyData: {fileID: 11400000, guid: 7bacff14cd11849439d14a178bc24ce9, type: 2}
-    amount: 3
+  Name: Wodna bomba
+  Description: 
+  Cost: 3
+  Target: 1
+  TargetTypeEnum: 0
+  DamageType: 6
+  attackModifier: 2
+  critModifier: 0
+  effectChance: 0

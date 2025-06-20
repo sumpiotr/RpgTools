@@ -85,4 +85,9 @@ public class PlayerCharacter : Character
         });
     }
 
+    public override void SetCurrentStatValue(CharacterStatsEnum stat, int value)
+    {
+        base.SetCurrentStatValue(stat, value);
+        if (stat == CharacterStatsEnum.Energy && onEnergyChange != null) onEnergyChange();
+    }
 }
