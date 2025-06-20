@@ -9,14 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54f92211071a2c4c9e5f8c529e3fd12, type: 3}
-  m_Name: PotionAction
+  m_Script: {fileID: 11500000, guid: 04ace8d43974aaf40b083815393cf89f, type: 3}
+  m_Name: MathNote2
   m_EditorClassIdentifier: 
-  Name: Mikstura
-  Description: "Przywraca 20 punkt\xF3w \u017Cycia"
-  Cost: 0
-  Target: 0
-  TargetTypeEnum: 2
-  Stat: 0
-  Amount: -25
-  Duration: 1
+  Name: Matematyczna Notatka 2
+  Description: ???
+  Type: 0
+  Message: "Notatka pokryta dziwnymi symbolami. Jedyne co udaje si\u0119 tobie odczyta\u0107
+    to ca\u0142ka"

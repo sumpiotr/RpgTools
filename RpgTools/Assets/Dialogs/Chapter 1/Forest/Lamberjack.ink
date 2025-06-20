@@ -14,7 +14,7 @@ EXTERNAL HasItem(name)
     ->FirstEncounter
   -GetVar("lumberjackHelped") == 1:
     ->End
-  -HasItem("Breakfast"):
+  -HasItem("Lunchbox"):
   ->Thanks
   -else:
     ->Brekfast
@@ -23,6 +23,7 @@ EXTERNAL HasItem(name)
 
 
 ===FirstEncounter===
+~SetVar("lumberjackTalk", 1)
 Tra-la-la-la, tra-la-la-la
 Chop the wood to light the fire
 Tra-la-la-la, tra-la-la-la
@@ -57,7 +58,7 @@ Długo już tutaj stoisz?
 *[Ładnie pan śpiewa]
 ->Complement
 *[Dzień dobry, tylko chwilke]
-->FirstTalk
+->FirstTalkB
 
 ===Complement===
 Oh dziękuje
@@ -72,6 +73,7 @@ Cóż nie moja sprawa ale uważajcie na siebie
 A i jeśli udałoby się wam znaleźć gdzieś samotną śniadaniówke to jest moja
 Skubana musiała mi gdzieś wylecieć po drodze 
 Jeśli udałoby się wam ją znaleźć to byłym bardzo wdzięczny
+{HasItem("Lunchbox"): ->Thanks}
 ->END
 
 ===Brekfast===
@@ -79,6 +81,7 @@ Jeśli udałoby się wam natknąć na moją śniadaniówke to byłbym bardzo wdz
 ->END
 
 ===Thanks===
+~SetVar("lumberjackHelped", 1)
 Oh, widzę że udało się wam ją znaleźć!
 Bardzo wam dziękuję!
 Macie to za waszą fatygę, z pewnością wam się przyda

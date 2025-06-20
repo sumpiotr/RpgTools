@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa70c1954a138f47afe30f9755a2968, type: 3}
+  m_Name: Kaplut
+  m_EditorClassIdentifier: 
+  Name: Kaplut
+  Sprite: {fileID: 21300000, guid: f7fb70308d8c6054d9b12d065cb1e4ad, type: 3}
+  Health: 35
+  Energy: 0
+  Attack: 6
+  Defense: 2
+  Speed: 5
+  CriticalRate: 0
+  baseAttackType: 0
+  Skills:
+  - {fileID: 11400000, guid: 04712ab1212a7894fb26afffa80b53cb, type: 2}
+  - {fileID: 11400000, guid: 04712ab1212a7894fb26afffa80b53cb, type: 2}
+  - {fileID: 11400000, guid: 418fdacc46ad89c4093e818135653932, type: 2}
+  weaknesses: 05000000
+  resistances: 

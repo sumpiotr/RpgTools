@@ -47,7 +47,7 @@ public class CutscenesManager : MonoBehaviour
     void Start()
     {
         //StartCutscene();
-        _changeSceneEvent.CallEvent(new SceneLoadData(new Vector2(-0.5f, -4), _debuggingScene.name, Vector2.zero));
+        _changeSceneEvent.CallEvent(new SceneLoadData(new Vector2(0, 0), _debuggingScene.name, Vector2.zero));
     }
 
     private void StartCutscene()
@@ -72,6 +72,10 @@ public class CutscenesManager : MonoBehaviour
         else if(name == "Tutorial")
         {
             Tutorial();
+        }
+        else if(name == "Lunchbox")
+        {
+            PlayerController.Instance.UpdatePosition(new Vector2(15.5f, 16));
         }
     }
 

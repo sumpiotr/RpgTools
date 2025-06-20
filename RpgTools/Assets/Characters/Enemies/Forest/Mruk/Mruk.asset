@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa70c1954a138f47afe30f9755a2968, type: 3}
+  m_Name: Mruk
+  m_EditorClassIdentifier: 
+  Name: Mruk
+  Sprite: {fileID: 21300000, guid: 2e99a6d711727f74a9f22ad6fc1b72c7, type: 3}
+  Health: 20
+  Energy: 0
+  Attack: 7
+  Defense: 4
+  Speed: 5
+  CriticalRate: 10
+  baseAttackType: 1
+  Skills:
+  - {fileID: 11400000, guid: 88d3a4f0cfacd3f4d90b374606edbb37, type: 2}
+  - {fileID: 11400000, guid: 0752660c36486684683047f29e5d5735, type: 2}
+  - {fileID: 11400000, guid: d1c39e2e9b5a45b43864c0be9ae6b212, type: 2}
+  weaknesses: 
+  resistances: 

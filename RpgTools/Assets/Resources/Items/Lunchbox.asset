@@ -9,14 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54f92211071a2c4c9e5f8c529e3fd12, type: 3}
-  m_Name: PotionAction
+  m_Script: {fileID: 11500000, guid: 04ace8d43974aaf40b083815393cf89f, type: 3}
+  m_Name: Lunchbox
   m_EditorClassIdentifier: 
-  Name: Mikstura
-  Description: "Przywraca 20 punkt\xF3w \u017Cycia"
-  Cost: 0
-  Target: 0
-  TargetTypeEnum: 2
-  Stat: 0
-  Amount: -25
-  Duration: 1
+  Name: "\u015Aniadani\xF3wka Drwala"
+  Description: "Zawiera po\u017Cywne \u015Bniadanie"
+  Type: 0
+  Message: "\u015Aniadani\xF3wka drawa, zawiera po\u017Cywne \u015Bniadanie"

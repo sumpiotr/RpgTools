@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f54f92211071a2c4c9e5f8c529e3fd12, type: 3}
-  m_Name: PotionAction
+  m_Name: Healing
   m_EditorClassIdentifier: 
-  Name: Mikstura
-  Description: "Przywraca 20 punkt\xF3w \u017Cycia"
-  Cost: 0
+  Name: "Lecz\u0105ca mg\u0142a"
+  Description: 
+  Cost: 2
   Target: 0
-  TargetTypeEnum: 2
+  TargetTypeEnum: 1
   Stat: 0
-  Amount: -25
+  Amount: 10
   Duration: 1

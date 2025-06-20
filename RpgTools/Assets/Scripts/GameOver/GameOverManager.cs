@@ -23,6 +23,7 @@ public class GameOverManager : MonoBehaviour
         InputManager.Instance.ChangeMapping(InputMapEnum.UI);
         gameOverScreen.SetActive(true);
         EventSystem.current.SetSelectedGameObject(defaultButton);
+        Debug.Log(EventSystem.current.gameObject.name);
    }
 
     public void HideGameOverScreen()

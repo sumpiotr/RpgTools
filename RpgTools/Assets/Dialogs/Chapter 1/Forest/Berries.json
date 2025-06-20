@@ -1,0 +1,1 @@
+﻿{"inkVersion":21,"root":[["#","^using AddItems","/#","ev","str","^Berry","/str",3,{"x()":"AddItems","exArgs":2},"pop","/ev","\n","^Zdobyłeś jagódki!","\n",["done",{"#f":5,"#n":"g-0"}],null],"done",{"#f":1}],"listDefs":{}}

@@ -9,14 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54f92211071a2c4c9e5f8c529e3fd12, type: 3}
-  m_Name: PotionAction
+  m_Script: {fileID: 11500000, guid: 9d6fa3f1cd6b95d45b95b4eadf6156cc, type: 3}
+  m_Name: WaterBomb
   m_EditorClassIdentifier: 
-  Name: Mikstura
-  Description: "Przywraca 20 punkt\xF3w \u017Cycia"
-  Cost: 0
-  Target: 0
-  TargetTypeEnum: 2
-  Stat: 0
-  Amount: -25
-  Duration: 1
+  Name: Wodna bomba
+  Description: 
+  Cost: 3
+  Target: 1
+  TargetTypeEnum: 0
+  DamageType: 6
+  attackModifier: 2
+  critModifier: 0
+  effectChance: 0

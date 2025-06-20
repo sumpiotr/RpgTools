@@ -55,8 +55,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if(_velocity != Vector2.zero)Debug.Log(transform.position);
         _rigidbody2D.linearVelocity = _velocity;
+    }
+
+    public bool IsMoving()
+    {
+        return _velocity != Vector2.zero;
     }
 
     public void Movement(InputAction.CallbackContext context)

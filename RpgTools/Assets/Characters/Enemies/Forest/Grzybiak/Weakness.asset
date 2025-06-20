@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f54f92211071a2c4c9e5f8c529e3fd12, type: 3}
-  m_Name: PotionAction
+  m_Name: Weakness
   m_EditorClassIdentifier: 
-  Name: Mikstura
-  Description: "Przywraca 20 punkt\xF3w \u017Cycia"
-  Cost: 0
-  Target: 0
-  TargetTypeEnum: 2
-  Stat: 0
-  Amount: -25
+  Name: "Os\u0142abiaj\u0105ce Zarodniki"
+  Description: 
+  Cost: 2
+  Target: 1
+  TargetTypeEnum: 1
+  Stat: 2
+  Amount: 5
   Duration: 1
