@@ -22,6 +22,11 @@ public class BattleCharacterChoiceMenu : BaseChoiceMenuManager<CharacterChoiceDa
       
     }
 
+    public void UpdateChoiceInitiative(int index, float value)
+    {
+        ((BattleCharacterChoice)_choices[index]).UpdateInitiative(value);
+    }
+
     public void DisplayChoiceEffect(int index, DamageTypeEnum effect)
     {
         ((BattleCharacterChoice)_choices[index]).DisplayEffect(effect);

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2a2b7005b0751c14dba5235ece7e265e
+guid: bb8e89f79069c214e927916902d3e0f8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3414367906210621945
-    second: forestBattle_0
+      213: -925345978958199149
+    second: meteor_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: forestBattle_0
+      name: meteor_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9f9ad264585426f20800000000000000
-      internalID: 3414367906210621945
+      spriteID: 3964cdd1cb28823f0800000000000000
+      internalID: -925345978958199149
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      forestBattle_0: 3414367906210621945
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

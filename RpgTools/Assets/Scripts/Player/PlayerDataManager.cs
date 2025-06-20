@@ -32,19 +32,41 @@ public class PlayerDataManager : MonoBehaviour
         
     }
 
+    public void LoadPlayers(List<PlayerCharacter> players)
+    {
+        _players = players;
+    }
+
+    public void AddPlayer(CharacterScriptableObject player)
+    {
+        PlayerCharacter character = new PlayerCharacter(player);
+        _players.Add(character);
+        SetupPlayer(_players.Count - 1);
+    }
+
     private void SetupPlayers()
     {
         for(int i = 0; i < _players.Count; i++)
         {
             int index = i;
-            PlayerMenuManager.Instance.SetPlayerListeners(_players[i], i);
-            if (_players[i].GetCharacterData().name == "Fex")_activePlayers.Add(_players[i]);
+            SetupPlayer(index);
         }
     }
 
-    public List<PlayerCharacter> GetPlayers() 
+    private void SetupPlayer(int index)
+    {
+        PlayerMenuManager.Instance.SetPlayerListeners(_players[index], index);
+        if (_players[index].GetCharacterData().name == "Fex") _activePlayers.Add(_players[index]);
+    }
+
+    public List<PlayerCharacter> GetActivePlayers() 
     { 
         return _activePlayers;
+    }
+
+    public List<PlayerCharacter> GetPlayers()
+    {
+        return _players;
     }
 
     public void AddActivePlayer(CharacterScriptableObject playerData)
@@ -53,10 +75,24 @@ public class PlayerDataManager : MonoBehaviour
         {
             if(character.GetCharacterData() == playerData)
             {
+                if (_activePlayers.Contains(character)) return;
                 _activePlayers.Add(character);
                 return;
             }
         }
     }
-   
+
+    public void AddActivePlayer(string name)
+    {
+        foreach (PlayerCharacter character in _players)
+        {
+            if (character.GetCharacterData().Name == name)
+            {
+                if (_activePlayers.Contains(character)) return;
+                _activePlayers.Add(character);
+                return;
+            }
+        }
+    }
+
 }

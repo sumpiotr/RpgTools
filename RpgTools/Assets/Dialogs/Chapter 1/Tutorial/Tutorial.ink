@@ -1,7 +1,10 @@
 EXTERNAL SetPortrait(name)
+EXTERNAL ShowBackground(name)
+EXTERNAL HideBackground()
 EXTERNAL SetVar(name, value)
 EXTERNAL GetVar(name)
 #using SetPortrait
+#using Background
 #using SetVar
 #using GetVar
 
@@ -87,10 +90,14 @@ Kompletnie ich zniszczyłaś
 Dzisiejsze polowanie pójdzie jak spłatka
 ~SetPortrait("")
 !
-Zauważacie przecinającą niebo niebieską kule
+~ShowBackground("meteor")
+~SetPortrait("Alice")
+Też to widzisz?!
+...
+~HideBackground()
+~SetPortrait("")
 [Huk]
 ~SetPortrait("Alice")
-Widziałeś to?!!
 To spadło chyba gdzieś w okolicy starych kopalni
 Choć musimy to sprawdzić!
 ~SetPortrait("Fex")
@@ -102,6 +109,5 @@ Zostaniemy legendami!
 Zdecydowanie nie o to mi chodziło!
 ~SetPortrait("Alice")
 Choć bo to coś jeszcze ucieknie!
-
 ->END
 

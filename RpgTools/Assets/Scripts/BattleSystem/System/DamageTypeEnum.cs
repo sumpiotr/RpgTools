@@ -9,5 +9,7 @@ public enum DamageTypeEnum
    Earth,
    Electricity,
    Water,
-   Energy
+   Energy,
+   Dead,
+   None
 }

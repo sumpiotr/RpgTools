@@ -19,7 +19,6 @@ MonoBehaviour:
   Attack: 10
   Defense: 2
   Speed: 3
-  CriticalRate: 0
+  CriticalRate: 20
   baseAttackType: 0
-  Skills:
-  - {fileID: 11400000, guid: 586e530714174e04b9c47da08962515f, type: 2}
+  Skills: []

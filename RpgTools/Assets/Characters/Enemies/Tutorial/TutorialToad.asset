@@ -16,7 +16,7 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: f7fb70308d8c6054d9b12d065cb1e4ad, type: 3}
   Health: 35
   Energy: 0
-  Attack: 8
+  Attack: 6
   Defense: 2
   Speed: 5
   CriticalRate: 0

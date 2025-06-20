@@ -37,6 +37,8 @@ public class PlayerCharacter : Character
             effectChance /= 2;
         }
         base.TakeDamage(attackDamage, damageType, effectChance);
+
+      
     }
 
     public void BaseAttack(Character target)

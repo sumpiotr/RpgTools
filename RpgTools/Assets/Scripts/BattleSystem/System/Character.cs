@@ -10,6 +10,8 @@ public class Character
     protected Action _onActionResolved;
 
     private Action _onHealthChange;
+    private Action _onDeath;
+
 
     private Action<DamageTypeEnum> _onGainEffect;
     private Action<DamageTypeEnum> _onEffectRemoved;
@@ -23,6 +25,7 @@ public class Character
     private HashSet<CharacterStatsEnum> _boofs;
     private HashSet<DamageTypeEnum> _effects;
 
+    private bool _dead = false;
 
     private float _initiative = 0;
 
@@ -90,16 +93,27 @@ public class Character
         _onHealthChange = onHealthChange;
     }
 
-    public void AddEffectGainListener(Action<DamageTypeEnum> onEffectGained)
+    public void SetOnDeathListener(Action onDeath)
+    {
+        _onDeath = onDeath;
+    }
+    public void SetEffectGainListener(Action<DamageTypeEnum> onEffectGained)
     {
         _onGainEffect = onEffectGained;
     }
 
-    public void AddEffectRemovedListener(Action<DamageTypeEnum> onEffectRemoved)
+    public void SetEffectRemovedListener(Action<DamageTypeEnum> onEffectRemoved)
     {
         _onEffectRemoved = onEffectRemoved;
     }
 
+
+    public void ClearBattleListeners()
+    {
+        _onDeath = null;
+        _onGainEffect = null;
+        _onEffectRemoved = null;
+    }
 
     public virtual void TakeDamage(int attackDamage, DamageTypeEnum damageType, int effectChance)
     {
@@ -113,12 +127,34 @@ public class Character
         if (damageType == DamageTypeEnum.Energy) totalDamae = attackDamage;//ignore defense
         attackDamage = Mathf.Max(minDamage, totalDamae);
         _currentStats[CharacterStatsEnum.Health] -= attackDamage;
-        _onHealthChange.Invoke();
 
         if (Random.Range(1, 101) <= effectChance)
         {
             AddEffect(damageType);
         }
+        _onHealthChange.Invoke();
+        if (GetCurrentStatValue(CharacterStatsEnum.Health) <= 0)
+        {
+            Dead();
+        }
+    }
+
+    private void Dead()
+    {
+        _currentStats[CharacterStatsEnum.Health] = 0;
+        _onHealthChange.Invoke();
+        foreach (DamageTypeEnum value in Enum.GetValues(typeof(DamageTypeEnum)))
+        {
+            _effectsCounter[value] = 0;
+        }
+        _effects.Clear();
+        _dead = true;
+        if(_onDeath != null)_onDeath.Invoke();
+    }
+
+    public bool IsDead()
+    {
+        return _dead;
     }
 
 
@@ -171,9 +207,7 @@ public class Character
         }
         if (_effects.Contains(DamageTypeEnum.Electricity))
         {
-            Debug.Log(Random.Range(1, 101));
             if (Random.Range(1, 101) <= electricityChance) {
-                Debug.Log("parali¿");
                 playTurn = false;
                 //if (_showMessage != null) _showMessage($"{_characterData.Name} jest sparali¿owany");
             }
@@ -250,6 +284,11 @@ public class Character
     public int GetTotalStatValue(CharacterStatsEnum stat)
     {
         return _currentStats[stat] + _boofsValues[stat];
+    }
+
+    public HashSet<DamageTypeEnum> GetEffects()
+    {
+        return _effects;
     }
 
     public bool IsUnderEffect(DamageTypeEnum effect)

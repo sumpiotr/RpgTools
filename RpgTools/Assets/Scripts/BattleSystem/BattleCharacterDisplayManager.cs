@@ -44,6 +44,16 @@ public class BattleCharacterDisplayManager : MonoBehaviour
             choiceData.Add(new CharacterChoiceData(false, enemy.Name, enemy.GetCharacterData().Sprite, enemy.GetCharacterData().Health, enemy.GetCharacterData().Speed, 1)); 
         }
         enemyDisplay.LoadChoices(choiceData);
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            enemyDisplay.UpdateChoiceHealth(i, data[i].GetCurrentStatValue(CharacterStatsEnum.Health));
+            enemyDisplay.UpdateChoiceInitiative(i, data[i].GetInitiative());
+            foreach (DamageTypeEnum effect in data[i].GetEffects()) 
+            {
+                enemyDisplay.DisplayChoiceEffect(i, effect);
+            }
+        }
     }
 
     public void LoadPlayers(List<PlayerCharacter> data)

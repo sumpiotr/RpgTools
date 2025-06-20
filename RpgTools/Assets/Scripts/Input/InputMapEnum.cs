@@ -6,5 +6,6 @@ public enum InputMapEnum
     Battle,
     Inventory,
     CharacterSelection,
+    UI,
 }
 

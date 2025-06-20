@@ -42,6 +42,9 @@ public class InputManager : MonoBehaviour
             case InputMapEnum.Inventory:
                 name = "Inventory";
                 break;
+            case InputMapEnum.UI:
+                name = "UI";
+                break;
             default:
                 name = "Player";
                 break;

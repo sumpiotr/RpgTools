@@ -28,6 +28,21 @@ public class DialogStatesManager : MonoBehaviour
         return states[name];
     }
 
+    public Dictionary<string, int> GetVariableStates()
+    {
+        return variableStates;
+    }
+
+    public void LoadVariablesStates(Dictionary<string, int> data)
+    {
+        variableStates.Clear();
+        variableStates = new Dictionary<string, int>(data);
+        //foreach(KeyValuePair<string, int> kvp in data)
+        //{
+        //    variableStates[kvp.Key] = kvp.Value;
+        //}
+    }
+
 
     public void SetVariable(string name, int value)
     {

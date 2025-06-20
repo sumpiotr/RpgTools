@@ -12,11 +12,7 @@ public class BattleManager : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject battleUI;
-
-    [SerializeField]
-    private Image fadeImage;        
-    private const float fadeDuration = 1f;    
+    private GameObject battleUI;  
     
 
     [SerializeField]
@@ -30,6 +26,7 @@ public class BattleManager : MonoBehaviour
     private const float tickValue = 0.1f;
     private IEnumerator updateCoroutine;
 
+    private List<Enemy> _activeEnemyList;
     private List<Enemy> _enemyList;
     private List<PlayerCharacter> _playerList;
 
@@ -115,6 +112,7 @@ public class BattleManager : MonoBehaviour
         MusicManager.Instance.PlayMusic(battleMusic);
         PlayerMenuManager.Instance.SetInBattle(true);
 
+        _activeEnemyList = new List<Enemy>();
         _enemyList = new List<Enemy>();
         _newEffectsInfo = new Queue<EffectInfo>();
         _removedEffectsInfo = new Queue<EffectInfo>();
@@ -126,6 +124,7 @@ public class BattleManager : MonoBehaviour
                 Enemy enemy = new Enemy(encounterMonster.enemyData);
                 if (encounterMonster.amount > 1) enemy.Name = $"{encounterMonster.enemyData.Name} {i + 1}";
                 else enemy.Name = encounterMonster.enemyData.Name;
+                _activeEnemyList.Add(enemy);
                 _enemyList.Add(enemy);
             }
         }
@@ -144,55 +143,24 @@ public class BattleManager : MonoBehaviour
             onLoaded = StartBattle;
         }
 
-        IEnumerator transition = Transition(onLoaded);
+        IEnumerator transition = BackgroundPanelManager.Instance.Transition(LoadBattleScreen, onLoaded);
         StartCoroutine(transition);
     }
 
     public void LoadBattle(EncounterScriptableObject encounter, Action onLoaded=null)
     {
-        LoadBattle(encounter, PlayerDataManager.Instance.GetPlayers(), onLoaded);
+        LoadBattle(encounter, PlayerDataManager.Instance.GetActivePlayers(), onLoaded);
     }
 
     private void LoadBattleScreen()
     {
         battleUI.SetActive(true);
         characterDisplayManager.LoadPlayers(_playerList);
-        characterDisplayManager.LoadEnemies(_enemyList);
+        characterDisplayManager.LoadEnemies(_activeEnemyList);
     }
 
 
-    private IEnumerator Transition(Action onLoaded)
-    {
-        float t = 0f;
-        Color c = fadeImage.color;
-        while (t < fadeDuration)
-        {
-            t += Time.deltaTime;
-            c.a = Mathf.Lerp(0f, 1f, t / fadeDuration); ;
-            fadeImage.color = c; 
-            yield return new  WaitForSeconds(Time.deltaTime);
-        }
-        c.a = 1;
-        fadeImage.color = c;
-
-        LoadBattleScreen();
-
-        t = 0f;
-        c = fadeImage.color;
-        while (t < fadeDuration)
-        {
-            t += Time.deltaTime;
-            c.a = Mathf.Lerp(1f, 0f, t / fadeDuration);
-            fadeImage.color = c;
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-        c.a = 0;
-        fadeImage.color = c;
-
-        yield return new WaitForSeconds(fadeDuration);
-
-        onLoaded();
-    }
+    
 
 
 
@@ -203,10 +171,14 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(updateCoroutine);
     }
 
-    public void EndBattle()
+    public void EndBattle(bool win)
     {
         PlayerMenuManager.Instance.SetInBattle(false);
         battleUI.SetActive(false);
+        foreach (var player in _playerList) 
+        {
+            player.ClearBattleListeners();
+        }
         _playerTurnQueue.Clear();
         _enemyTurnQueue.Clear();
         _newEffectsInfo.Clear();
@@ -214,58 +186,69 @@ public class BattleManager : MonoBehaviour
         InputManager.Instance.ChangeMapping(InputMapEnum.Player);
         OnPlayerTurnEnd = null;
         MusicManager.Instance.PlayPreviousMusic();
-        if (OnBattleWin != null) OnBattleWin.Invoke();
+        if (win)
+        {
+            if (OnBattleWin != null) OnBattleWin.Invoke();
+        }
+        else
+        {
+            GameOverManager.Instance.ShowGameOverScreen();
+        }
     }
 
     private void SetCharactersListeners()
     {
-        SetEnemyHealthListeners();
-        for (int i = 0; i < _enemyList.Count; i++)
-        {
-            int index = i;
-            _enemyList[i].AddEffectGainListener((DamageTypeEnum effect) =>
-            {
-                _newEffectsInfo.Enqueue(new EffectInfo(false, index, effect));
-            });
-
-            _enemyList[i].AddEffectRemovedListener((DamageTypeEnum effect) =>
-            {
-                _removedEffectsInfo.Enqueue(new EffectInfo(false, index, effect));
-            });
-        }
+        SetEnemyListeners();
 
         for (int i = 0; i < _playerList.Count; i++)
         {
             int index = i;
 
-            _playerList[i].AddEffectGainListener((DamageTypeEnum effect) =>
+            _playerList[i].SetEffectGainListener((DamageTypeEnum effect) =>
             {
                 _newEffectsInfo.Enqueue(new EffectInfo(true, index, effect));
             });
 
-            _playerList[i].AddEffectRemovedListener((DamageTypeEnum effect) =>
+            _playerList[i].SetEffectRemovedListener((DamageTypeEnum effect) =>
             {
                 _removedEffectsInfo.Enqueue(new EffectInfo(true, index, effect));
+            });
+
+            _playerList[i].SetOnDeathListener(() =>
+            {
+                characterDisplayManager.DisplayEffect(true, index, DamageTypeEnum.Dead);
             });
 
             _playerList[i].SetChooseTarget(ChooseTarget);
         }
     }
 
-    private void SetEnemyHealthListeners()
+    private void SetEnemyListeners()
     {
-        for(int i = 0; i < _enemyList.Count; i++)
+        for(int i = 0; i < _activeEnemyList.Count; i++)
         {
             int index = i;
-            _enemyList[i].SetHealthListener(() =>
+            _activeEnemyList[i].SetHealthListener(() =>
             {
-                int health = _enemyList[index].GetCurrentStatValue(CharacterStatsEnum.Health);
+                int health = _activeEnemyList[index].GetCurrentStatValue(CharacterStatsEnum.Health);
                 characterDisplayManager.UpdateHealth(false, index, health);
-                if (health <= 0) { 
-                    _enemyList.RemoveAt(index);
-                    SetEnemyHealthListeners();
-                    characterDisplayManager.LoadEnemies(_enemyList);
-                }
+            });
+
+            _activeEnemyList[i].SetEffectGainListener((DamageTypeEnum effect) =>
+            {
+                _newEffectsInfo.Enqueue(new EffectInfo(false, index, effect));
+            });
+
+            _activeEnemyList[i].SetEffectRemovedListener((DamageTypeEnum effect) =>
+            {
+                _removedEffectsInfo.Enqueue(new EffectInfo(false, index, effect));
+            });
+
+            _activeEnemyList[i].SetOnDeathListener(() =>
+            {
+                _activeEnemyList.RemoveAt(index);
+                SetEnemyListeners();
+                characterDisplayManager.LoadEnemies(_activeEnemyList);
             });
         }
     }
@@ -276,13 +259,14 @@ public class BattleManager : MonoBehaviour
         {
             yield return new WaitForSeconds(tickValue);
 
-            foreach (Enemy enemy in _enemyList)
+            foreach (Enemy enemy in _activeEnemyList)
             {
                 if (enemy.UpdateInitiative(tickValue)) _enemyTurnQueue.Enqueue(enemy);
             }
 
             foreach (PlayerCharacter character in _playerList)
             {
+                if (character.IsDead()) continue;
                 if (character.UpdateInitiative(tickValue)) _playerTurnQueue.Enqueue(character);
             }
 
@@ -306,9 +290,18 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        if(_enemyList.Count == 0)
+        if(_playerList.Where(x=>x.IsDead()).Count() == _playerList.Count)
         {
-            EndBattle();
+            DisplayBattleMessage("Ostatni z sojuszników poleg³!", () =>
+            {
+                EndBattle(false);
+            });
+            return;
+        }
+
+        if(_activeEnemyList.Count == 0)
+        {
+            EndBattle(true);
             return;
         }
 
@@ -360,7 +353,9 @@ public class BattleManager : MonoBehaviour
             return;
         }
         EffectInfo data = _removedEffectsInfo.Dequeue();
-        characterDisplayManager.HideEffect(data.Player, data.Index, data.Effect);
+
+        if (!data.Player && _activeEnemyList.Contains(_enemyList[data.Index])) characterDisplayManager.HideEffect(data.Player, _activeEnemyList.IndexOf(_enemyList[data.Index]), data.Effect);
+        else characterDisplayManager.HideEffect(data.Player, data.Index, data.Effect);
         ResolveRemovedEffectsInfo();
     }
 
@@ -418,7 +413,7 @@ public class BattleManager : MonoBehaviour
 
         DisplayBattleMessage($"{enemy.Name} u¿ywa {action.Name}", () =>
         {
-            enemy.ChooseTargetAndResolveAction(action, _enemyList.Select(x => (Character)x).ToList(), _playerList.Select(x => (Character)x).ToList(), () => { EndEnemyTurn(enemy); });
+            enemy.ChooseTargetAndResolveAction(action, _activeEnemyList.Select(x => (Character)x).ToList(), _playerList.Where(x=>!x.IsDead()).Select(x => (Character)x).ToList(), () => { EndEnemyTurn(enemy); });
         });
     }
 
@@ -444,7 +439,7 @@ public class BattleManager : MonoBehaviour
         {
             ChooseTarget(player, false, (int enemyIndex) =>
             {
-                player.BaseAttack(_enemyList[enemyIndex]);
+                player.BaseAttack(_activeEnemyList[enemyIndex]);
                 EndPlayerTurn(player);
             });
         }
@@ -454,7 +449,7 @@ public class BattleManager : MonoBehaviour
         }
         else if (actionType == PlayerActionTypeEnum.Skill)
         {
-            player.ChooseTargetAndResolveAction(action, _playerList.Select(x => (Character)x).ToList(), _enemyList.Select(x => (Character)x).ToList(), () => { EndPlayerTurn(player); });
+            player.ChooseTargetAndResolveAction(action, _playerList.Select(x => (Character)x).ToList(), _activeEnemyList.Select(x => (Character)x).ToList(), () => { EndPlayerTurn(player); });
         }
     }
 

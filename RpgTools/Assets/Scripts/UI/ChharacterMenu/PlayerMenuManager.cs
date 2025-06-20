@@ -58,12 +58,14 @@ public class PlayerMenuManager : MonoBehaviour
 
     public void UpdateHealthbar(int index, int value)
     {
-        GetMenu().UpdateChoiceHealth(index, value);
+        BattleCharacterChoiceMenu menu = GetMenu();
+        if(menu.gameObject.activeSelf)GetMenu().UpdateChoiceHealth(index, value);
     }
 
     public void UpdateEnergybar(int index, int value)
     {
-        GetMenu().UpdateChoiceEnergy(index, value);
+        BattleCharacterChoiceMenu menu = GetMenu();
+        if (menu.gameObject.activeSelf) GetMenu().UpdateChoiceEnergy(index, value);
     }
 
     public void SetTitle(string title)
@@ -90,7 +92,7 @@ public class PlayerMenuManager : MonoBehaviour
         characterMenu.gameObject.SetActive(true);
         characterMenu.SetTitle(title);
         characterMenu.Unfocus();
-        List<PlayerCharacter> players = PlayerDataManager.Instance.GetPlayers();
+        List<PlayerCharacter> players = PlayerDataManager.Instance.GetActivePlayers();
         List<CharacterChoiceData> choices = new List<CharacterChoiceData>();
         foreach (PlayerCharacter player in players) 
         {

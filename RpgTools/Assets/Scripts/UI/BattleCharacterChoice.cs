@@ -32,16 +32,25 @@ public class BattleCharacterChoice : BaseCharacterMenuChoice
 
         effects = new Dictionary<DamageTypeEnum, GameObject>();
 
-        foreach (EffectImage effectImage in effectsImages) 
+        HideEffects();
+
+    }
+
+    private void HideEffects()
+    {
+        foreach (EffectImage effectImage in effectsImages)
         {
             effectImage.image.SetActive(false);
             effects[effectImage.damageType] = effectImage.image;
         }
-
     }
 
     public void DisplayEffect(DamageTypeEnum effect)
     {
+        if(effect == DamageTypeEnum.Dead)
+        {
+            HideEffects();
+        }
         effects[effect].SetActive(true);
     }
 

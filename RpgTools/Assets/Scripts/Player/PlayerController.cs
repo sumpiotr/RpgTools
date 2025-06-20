@@ -48,6 +48,10 @@ public class PlayerController : MonoBehaviour
         transform.position = position;
     }
 
+    public Vector2 GetPosition()
+    {
+        return transform.position;
+    }
 
     private void Update()
     {

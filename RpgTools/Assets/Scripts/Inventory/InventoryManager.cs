@@ -121,7 +121,7 @@ public class InventoryManager : MonoBehaviour
             if (!PlayerMenuManager.Instance.InBattle()) InventoryUIManager.Instance.ShowInventory(onItemUsed);
             return;
         }
-        PlayerCharacter choosen = PlayerDataManager.Instance.GetPlayers()[targetIndex];
+        PlayerCharacter choosen = PlayerDataManager.Instance.GetActivePlayers()[targetIndex];
         List<Character> list = new List<Character>();
         list.Add(choosen);
         choosen.ResolveAction(item.Action, list);

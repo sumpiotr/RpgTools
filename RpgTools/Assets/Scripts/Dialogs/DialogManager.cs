@@ -161,6 +161,15 @@ public class DialogManager : MonoBehaviour
                         CutscenesManager.Instance.PlayCutscene(name);
                     });
                 }
+                else if (functionName == "Background")
+                {
+                    _currentStory.BindExternalFunction("ShowBackground", (string name) => {
+                        BackgroundPanelManager.Instance.DisplayImage(name);
+                    });
+                    _currentStory.BindExternalFunction("HideBackground", () => {
+                        BackgroundPanelManager.Instance.HideImage();
+                    });
+                }
             }
         }
     }
