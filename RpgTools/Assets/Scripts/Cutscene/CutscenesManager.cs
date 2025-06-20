@@ -32,6 +32,8 @@ public class CutscenesManager : MonoBehaviour
     [SerializeField]
     private CharacterScriptableObject tutorialAliceData;
     [SerializeField]
+    private CharacterScriptableObject AliceData;
+    [SerializeField]
     private TextAsset tutorialDialog;
 
 
@@ -126,6 +128,7 @@ public class CutscenesManager : MonoBehaviour
     private void EndTutorial() 
     {
         DialogManager.Instance.StartDialog(tutorialDialog.text);
+        PlayerDataManager.Instance.AddActivePlayer(AliceData);
     }
 
 

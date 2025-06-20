@@ -1365,7 +1365,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 2, y: 0.23, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5194,6 +5194,7 @@ MonoBehaviour:
   _startDialog: {fileID: 4900000, guid: 12ba505d093692a43a2472cf91495e4a, type: 3}
   tutorialEncounter: {fileID: 11400000, guid: 5a7470f551139274aab8b92b02b31815, type: 2}
   tutorialAliceData: {fileID: 11400000, guid: 3c34a5d50494f9c41b5b7d20896c553b, type: 2}
+  AliceData: {fileID: 11400000, guid: 49e88c64c6132ab4d837af2b50d58773, type: 2}
   tutorialDialog: {fileID: 4900000, guid: a62f4c98998383c42804f096b354ba5a, type: 3}
 --- !u!1 &1812126998
 GameObject:

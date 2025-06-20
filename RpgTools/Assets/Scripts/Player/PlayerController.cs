@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(_velocity != Vector2.zero)Debug.Log(transform.position);
         _rigidbody2D.linearVelocity = _velocity;
     }
 
@@ -66,7 +67,6 @@ public class PlayerController : MonoBehaviour
             //_rigidbody2D.linearVelocity = Vector2.zero;
             return;
         }
-
         if (Mathf.Abs(movement.y) > Mathf.Abs(movement.x)) 
         {
             if(movement.y > 0)
