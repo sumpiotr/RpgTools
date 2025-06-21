@@ -29,7 +29,12 @@ public class BackgroundPanelManager : MonoBehaviour
         Color c = Color.white;
         c.a = 1;
         fadeImage.color = c;
-        fadeImage.sprite = Resources.Load<Sprite>($"Images/{name}");
+        if(name == "")
+        {
+            fadeImage.sprite = null;
+            fadeImage.color = Color.black;
+        }
+        else fadeImage.sprite = Resources.Load<Sprite>($"Images/{name}");
         rectTransform.anchorMin = new Vector2( rectTransform.anchorMin.x, 0.3f);
         rectTransform.offsetMin = Vector2.zero;
         rectTransform.offsetMax = Vector2.zero;

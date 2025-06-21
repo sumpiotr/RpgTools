@@ -77,6 +77,10 @@ public class CutscenesManager : MonoBehaviour
         {
             PlayerController.Instance.UpdatePosition(new Vector2(15.5f, 16));
         }
+        else if(name == "Artifact")
+        {
+            Artifact();
+        }
     }
 
     private void GuardCutscene()
@@ -137,4 +141,11 @@ public class CutscenesManager : MonoBehaviour
 
 
     #endregion
+
+    private void Artifact()
+    {
+        GameObject artifact = GameObject.Find("Artifact");
+        if (artifact == null) return;
+        artifact.GetComponent<StateObject>().SetState(false);
+    }
 }
