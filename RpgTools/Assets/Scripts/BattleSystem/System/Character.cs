@@ -25,11 +25,14 @@ public class Character
     private HashSet<CharacterStatsEnum> _boofs;
     private HashSet<DamageTypeEnum> _effects;
 
-    private bool _dead = false;
+    protected bool _dead = false;
 
     private float _initiative = 0;
 
     const int minDamage = 1;
+
+    protected ActionBaseScriptableObject _current;
+
     #region Effects consts
 
     const float criticalDamageMultiplier = 2f;
@@ -117,17 +120,15 @@ public class Character
 
     public virtual void TakeDamage(int attackDamage, DamageTypeEnum damageType, int effectChance)
     {
-
         if(_effects.Contains(DamageTypeEnum.Slash) && damageType == DamageTypeEnum.Slash)
         {
             attackDamage = GetMultipliedValue(attackDamage, 1.25f);
         }
 
-        int totalDamae = attackDamage - _currentStats[CharacterStatsEnum.Defense] - _boofsValues[CharacterStatsEnum.Defense];
+        int totalDamae = attackDamage - GetTotalStatValue(CharacterStatsEnum.Defense);
         if (damageType == DamageTypeEnum.Energy) totalDamae = attackDamage;//ignore defense
         attackDamage = Mathf.Max(minDamage, totalDamae);
         _currentStats[CharacterStatsEnum.Health] -= attackDamage;
-
         if (Random.Range(1, 101) <= effectChance)
         {
             AddEffect(damageType);
@@ -137,6 +138,12 @@ public class Character
         {
             Dead();
         }
+    }
+
+    public void Restore()
+    {
+        SetCurrentStatValue(CharacterStatsEnum.Health, _characterData.Health);
+        SetCurrentStatValue(CharacterStatsEnum.Energy, _characterData.Energy);
     }
 
     private void Dead()
@@ -160,15 +167,22 @@ public class Character
 
     public void Boost(int amount, int duration, CharacterStatsEnum type)
     {
-        if(type == CharacterStatsEnum.Health || type == CharacterStatsEnum.Energy)
+        if(type == CharacterStatsEnum.Health)
         {
             _currentStats[type] += amount;
+            if (_currentStats[type] > _characterData.Health) _currentStats[type] = _characterData.Health;
             _onHealthChange();
+        }
+        else if (type == CharacterStatsEnum.Energy)
+        {
+            _currentStats[type] += amount;
+            if (_currentStats[type] > _characterData.Energy) _currentStats[type] = _characterData.Energy;
         }
         else
         {
             if (duration < 0) return;
-            _boofsValues[type] = amount+1;
+            _boofsValues[type] = amount;
+            _boofsCounter[type] = duration + 1;
             _boofs.Add(type);
         }
     }
@@ -183,11 +197,11 @@ public class Character
 
     }
 
-    public void Attack(Character target, DamageTypeEnum type, int effectChance)
+    public void Attack(Character target, DamageTypeEnum type, int effectChance, float muliplier)
     {
-        int damage = GetTotalStatValue(CharacterStatsEnum.Attack);
+        int damage = GetMultipliedValue(GetTotalStatValue(CharacterStatsEnum.Attack), muliplier);
         if (Random.Range(1, 101) <= GetTotalStatValue(CharacterStatsEnum.CriticalRate) || target.IsUnderEffect(DamageTypeEnum.Buldgeoning)) damage = GetMultipliedValue(damage, criticalDamageMultiplier); 
-        target.TakeDamage(_currentStats[CharacterStatsEnum.Attack] + _boofsValues[CharacterStatsEnum.Attack], type, effectChance);
+        target.TakeDamage(damage, type, effectChance);
     }
 
     public bool UpdateInitiative(float val)
@@ -217,6 +231,7 @@ public class Character
 
     public void EndTurn()
     {
+        Debug.Log("End turn " + _characterData.Name);
         _initiative = 0;
         CheckBoofs();
         CheckEffects();
@@ -224,14 +239,21 @@ public class Character
 
     private void CheckBoofs()
     {
+        List<CharacterStatsEnum> toRemove = new List<CharacterStatsEnum>();
         foreach (CharacterStatsEnum type in _boofs) 
         {
+            Debug.Log(_boofsCounter[type]);
             _boofsCounter[type] -= 1;
-            if (_boofsCounter[type] == 0)
+            if (_boofsCounter[type] <= 0)
             {
-                _boofs.Remove(type);
+                toRemove.Add(type);
                 _boofsValues[type] = 0;
             }
+        }
+
+        foreach (CharacterStatsEnum type in toRemove) 
+        {
+            _boofs.Remove(type);
         }
     }
 
@@ -301,9 +323,20 @@ public class Character
         return (int)Mathf.Ceil(multiplier * ((float)value));
     }
 
+    public ActionBaseScriptableObject GetCurrentAction()
+    {
+        return _current;
+    }
+
+    public void SetCurrentAction(ActionBaseScriptableObject action)
+    {
+        _current = action;
+    }
+
     public void ChooseTargetAndResolveAction(ActionBaseScriptableObject action, List<Character> allies, List<Character> enemies, Action onResolved)
     {
         _onActionResolved = onResolved;
+        _current = action;
         List<Character> targets = new List<Character>();
         if (action.TargetTypeEnum == TargetTypeEnum.Self)
         {
@@ -347,7 +380,7 @@ public class Character
             AttackScriptableObject attack = (AttackScriptableObject)action;
             foreach(Character target in targets) 
             {
-                Attack(target, attack.DamageType, attack.effectChance);
+                Attack(target, attack.DamageType, attack.effectChance, attack.attackModifier);
             }
         }
 

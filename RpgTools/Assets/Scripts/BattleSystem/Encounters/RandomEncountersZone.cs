@@ -36,7 +36,6 @@ public class RandomEncountersZone : MonoBehaviour
     {
         if (!PlayerController.Instance.IsMoving()) return;
         counter += Time.deltaTime;
-        Debug.Log(counter);
         if(counter >= waitTime)
         {
             counter = 0;

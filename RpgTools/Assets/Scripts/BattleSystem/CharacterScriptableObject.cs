@@ -6,6 +6,7 @@ public class CharacterScriptableObject : ScriptableObject
 {
     public string Name;
     public Sprite Sprite;
+    public Sprite BattleSprite;
     public int Health;
     public int Energy;
     public int Attack;

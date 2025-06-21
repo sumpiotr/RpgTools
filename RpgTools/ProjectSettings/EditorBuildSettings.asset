@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Forest.unity
     guid: 6a87d25a4d1cd9d49bb55e811ceb4c5c
+  - enabled: 1
+    path: Assets/Scenes/MinesEntrence.unity
+    guid: 327a6349a7c7f504fba47d1febaa71ef
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

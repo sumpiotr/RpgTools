@@ -58,12 +58,14 @@ public class PlayerMenuManager : MonoBehaviour
 
     public void UpdateHealthbar(int index, int value)
     {
+        if (index == -1) return;
         BattleCharacterChoiceMenu menu = GetMenu();
         if(menu.gameObject.activeSelf)GetMenu().UpdateChoiceHealth(index, value);
     }
 
     public void UpdateEnergybar(int index, int value)
     {
+        if (index == -1) return;
         BattleCharacterChoiceMenu menu = GetMenu();
         if (menu.gameObject.activeSelf) GetMenu().UpdateChoiceEnergy(index, value);
     }
@@ -73,16 +75,16 @@ public class PlayerMenuManager : MonoBehaviour
         if(!battle)characterMenu.SetTitle(title);
     }
 
-    public void SetPlayerListeners(PlayerCharacter player, int index)
+    public void SetPlayerListeners(PlayerCharacter player, int index, int battleIndex)
     {
-        player.AddHealthListener(() =>
+        player.SetHealthListener(() =>
         {
-            UpdateHealthbar(index, player.GetCurrentStatValue(CharacterStatsEnum.Health));
+            UpdateHealthbar(InBattle() ? battleIndex : index, player.GetCurrentStatValue(CharacterStatsEnum.Health));
         });
 
-        player.AddEnergyListener(() =>
+        player.SetEnergyListener(() =>
         {
-            UpdateEnergybar(index, player.GetCurrentStatValue(CharacterStatsEnum.Energy));
+            UpdateEnergybar(InBattle() ? battleIndex : index, player.GetCurrentStatValue(CharacterStatsEnum.Energy));
         });
     }
 

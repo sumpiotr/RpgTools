@@ -14,11 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Alice
   Sprite: {fileID: 21300000, guid: 6e499d842015f054898f2f47056a9cf6, type: 3}
-  Health: 50
+  BattleSprite: {fileID: 21300000, guid: 6e499d842015f054898f2f47056a9cf6, type: 3}
+  Health: 3
   Energy: 12
   Attack: 10
   Defense: 2
   Speed: 3
   CriticalRate: 20
   baseAttackType: 0
-  Skills: []
+  Skills:
+  - {fileID: 11400000, guid: 95901fb511f519b458715362dab72de0, type: 2}
+  - {fileID: 11400000, guid: f551ac626f79bd14292bbe1203dcfe0e, type: 2}
+  - {fileID: 11400000, guid: 458a3ee557a1fcc4c9bac7b59668a321, type: 2}
+  - {fileID: 11400000, guid: 008769817f1df1640b5d630a3a7e05d4, type: 2}

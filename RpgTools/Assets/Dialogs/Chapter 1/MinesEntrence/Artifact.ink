@@ -13,7 +13,7 @@ Mehhh to nie jest żaden potwór tylko jakieś świecące ustrojstwo
 ~SetPortrait("")
 Kiedy podchodzisz bliżej do krateru niebieski obiekt wystrzeliwuje nagle w twoim kierunku
 Uderza cię w pierś po czym… 
-ShowBackground("")
+~ShowBackground("")
 ~SetPortrait("WAP")
 [Witaj nowy użytkowniku w twoim Wirtualnym Asystencie Polowań WAP]
 [Wykryto kompatybilne rozszerzenie ciała]

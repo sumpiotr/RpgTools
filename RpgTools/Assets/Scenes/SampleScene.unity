@@ -866,6 +866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleUI: {fileID: 1248561191}
+  backgroundImage: {fileID: 1449480536}
   playerTurnManager: {fileID: 1760964314}
   battleMusic: {fileID: 8300000, guid: 5d221fd15b6000544a72e8dca0073d9e, type: 3}
   encouter: {fileID: 11400000, guid: 1ea0ab4925e26ca4db29ca0fb5a1be78, type: 2}
@@ -3158,6 +3159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startCharacterData:
   - {fileID: 11400000, guid: 157bbae6380be834fa7d3f74566b736d, type: 2}
+  - {fileID: 11400000, guid: 49e88c64c6132ab4d837af2b50d58773, type: 2}
 --- !u!1 &1268620749
 GameObject:
   m_ObjectHideFlags: 0
@@ -5303,6 +5305,9 @@ MonoBehaviour:
   tutorialAliceData: {fileID: 11400000, guid: 3c34a5d50494f9c41b5b7d20896c553b, type: 2}
   AliceData: {fileID: 11400000, guid: 49e88c64c6132ab4d837af2b50d58773, type: 2}
   tutorialDialog: {fileID: 4900000, guid: a62f4c98998383c42804f096b354ba5a, type: 3}
+  metalDogEncounterCutscene: {fileID: 11400000, guid: 235508ecb884ac640b04fbec58b9a350, type: 2}
+  metalDogEncounterBattle: {fileID: 11400000, guid: b5f97ed985089644494ad0b846124e80, type: 2}
+  metalDogEncounterDialog: {fileID: 4900000, guid: 83ef128851cb6a24fb5aca6d101ccfcc, type: 3}
 --- !u!1 &1812126998
 GameObject:
   m_ObjectHideFlags: 0

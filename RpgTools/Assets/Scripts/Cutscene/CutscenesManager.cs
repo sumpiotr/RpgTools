@@ -37,6 +37,13 @@ public class CutscenesManager : MonoBehaviour
     private TextAsset tutorialDialog;
 
 
+    [Header("MetalDog")]
+    [SerializeField]
+    private EncounterScriptableObject metalDogEncounterCutscene;
+    [SerializeField]
+    private EncounterScriptableObject metalDogEncounterBattle;
+    [SerializeField]
+    private TextAsset metalDogEncounterDialog;
 
     private void Awake()
     {
@@ -47,6 +54,7 @@ public class CutscenesManager : MonoBehaviour
     void Start()
     {
         //StartCutscene();
+        //new Vector2(89, 28)
         _changeSceneEvent.CallEvent(new SceneLoadData(new Vector2(0, 0), _debuggingScene.name, Vector2.zero));
     }
 
@@ -81,6 +89,14 @@ public class CutscenesManager : MonoBehaviour
         {
             Artifact();
         }
+        else if(name == "MetalDogEncounter")
+        {
+            MetalDogEncounter();
+        }
+        else if(name == "MetalDogTame")
+        {
+            MetalDogTame();
+        }
     }
 
     private void GuardCutscene()
@@ -99,7 +115,7 @@ public class CutscenesManager : MonoBehaviour
         _eventIndex = 0;
         List<PlayerCharacter> battlePlayers = new List<PlayerCharacter>();
         battlePlayers.Add(new PlayerCharacter(tutorialAliceData));
-        PlayerMenuManager.Instance.SetPlayerListeners(battlePlayers[0], 0);
+        PlayerMenuManager.Instance.SetPlayerListeners(battlePlayers[0], 0, 0);
         BattleManager.Instance.LoadBattle(tutorialEncounter, battlePlayers, () => {
             battlePlayers[0].SetCurrentStatValue(CharacterStatsEnum.Energy, 1);
             BattleManager.Instance.DisableMainMenuOption("Use Item");
@@ -147,5 +163,87 @@ public class CutscenesManager : MonoBehaviour
         GameObject artifact = GameObject.Find("Artifact");
         if (artifact == null) return;
         artifact.GetComponent<StateObject>().SetState(false);
+    }
+
+    #region MetalDogEncounter
+
+    private void MetalDogEncounter()
+    {
+        PlayerDataManager.Instance.AddActivePlayer(AliceData);
+        _eventIndex = 0;
+        PlayerDataManager.Instance.RestorePlayers();
+        BattleManager.Instance.SetBattleMusic("Sonic2Boss");
+        BattleManager.Instance.ChangeBackground("FieldBattle");
+        BattleManager.Instance.OnPlayerTurnEnd = (PlayerCharacter player) =>
+        {
+            MetalDogEvents(player);
+        };
+        BattleManager.Instance.LoadBattle(metalDogEncounterCutscene);
+
+    }
+
+    private void MetalDogEvents(PlayerCharacter player)
+    {
+       if(_eventIndex == 0)
+       {
+            if (player.GetCurrentAction() != null)
+            {
+                if (player.GetCurrentAction().GetType() == typeof(AttackScriptableObject))
+                {
+                    _eventIndex++;
+                    DialogManager.Instance.StartDialog(metalDogEncounterDialog.text, () =>
+                    {
+                        BattleManager.Instance.ResolveTurns();
+                    });
+                }
+                else
+                {
+                    BattleManager.Instance.ResolveTurns();
+                }
+            }
+            else
+            {
+                BattleManager.Instance.ResolveTurns();
+            }
+       }
+       else if(_eventIndex > 0 && _eventIndex <= 2)
+       {
+            _eventIndex++;
+            BattleManager.Instance.ResolveTurns();
+       }
+       else if(_eventIndex == 3)
+       {
+            _eventIndex++;
+            DialogManager.Instance.StartDialog(metalDogEncounterDialog.text, () =>
+            {
+                PlayerDataManager.Instance.RestorePlayers();
+                BattleManager.Instance.SetBattleMusic("FaceDown");
+                PlayerDataManager.Instance.AddActivePlayer("Fex");
+                BattleManager.Instance.OnPlayerTurnEnd = null;
+                MusicManager.Instance.PlayPreviousMusic();
+                BattleManager.Instance.LoadBattle(metalDogEncounterBattle);
+                BattleManager.Instance.OnBattleWin = () =>
+                {
+                    MetalDogEncounterEnd();
+                };
+            });
+        }
+    }
+
+    private void MetalDogEncounterEnd()
+    {
+        MusicManager.Instance.PlayMusic("MinesEntrance");
+        DialogManager.Instance.StartDialog(metalDogEncounterDialog.text);
+    }
+
+
+
+    #endregion
+
+    private void MetalDogTame()
+    {
+        GameObject evil = GameObject.Find("evilWilkur");
+        if (evil == null) return;
+        evil.SetActive(false);
     }
 }

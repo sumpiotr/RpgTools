@@ -6,4 +6,5 @@ public class EnemyScriptableObject : CharacterScriptableObject
 {
     public List<DamageTypeEnum> weaknesses;
     public List<DamageTypeEnum> resistances;
+    public List<DamageTypeEnum> immunities;
 }

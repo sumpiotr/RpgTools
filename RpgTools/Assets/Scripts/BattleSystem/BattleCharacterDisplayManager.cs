@@ -61,7 +61,7 @@ public class BattleCharacterDisplayManager : MonoBehaviour
         List<CharacterChoiceData> choiceData = new List<CharacterChoiceData>();
         foreach (Character character in data)
         {
-            choiceData.Add(new CharacterChoiceData(true, character.GetCharacterData().Name, character.GetCharacterData().Sprite, character.GetCharacterData().Health, character.GetCharacterData().Speed, character.GetCharacterData().Energy));
+            choiceData.Add(new CharacterChoiceData(true, character.GetCharacterData().Name, character.GetCharacterData().BattleSprite, character.GetCharacterData().Health, character.GetCharacterData().Speed, character.GetCharacterData().Energy));
         }
         playerDisplay.LoadChoices(choiceData);
         for (int i = 0; i < data.Count; i++) 

@@ -17,6 +17,6 @@ MonoBehaviour:
   Cost: 1
   Target: 0
   TargetTypeEnum: 2
-  Stat: 4
+  Stat: 5
   Amount: 20
   Duration: 5

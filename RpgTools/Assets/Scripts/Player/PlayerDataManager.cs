@@ -55,8 +55,8 @@ public class PlayerDataManager : MonoBehaviour
 
     private void SetupPlayer(int index)
     {
-        PlayerMenuManager.Instance.SetPlayerListeners(_players[index], index);
-        if (_players[index].GetCharacterData().name == "Fex") _activePlayers.Add(_players[index]);
+        _activePlayers.Add(_players[index]);
+        PlayerMenuManager.Instance.SetPlayerListeners(_players[index], index, _activePlayers.IndexOf(_players[index]));
     }
 
     public List<PlayerCharacter> GetActivePlayers() 
@@ -69,29 +69,43 @@ public class PlayerDataManager : MonoBehaviour
         return _players;
     }
 
+    public void RestorePlayers()
+    {
+        foreach(PlayerCharacter character in _players)
+        {
+            character.Restore();
+        }
+    }
+
     public void AddActivePlayer(CharacterScriptableObject playerData)
     {
+        int index = 0;
         foreach (PlayerCharacter character in _players)
         {
             if(character.GetCharacterData() == playerData)
             {
                 if (_activePlayers.Contains(character)) return;
                 _activePlayers.Add(character);
+                SetupPlayer(index);
                 return;
             }
+            index++;
         }
     }
 
     public void AddActivePlayer(string name)
     {
+        int index = 0;
         foreach (PlayerCharacter character in _players)
         {
             if (character.GetCharacterData().Name == name)
             {
                 if (_activePlayers.Contains(character)) return;
                 _activePlayers.Add(character);
+                SetupPlayer(index);
                 return;
             }
+                    index++;
         }
     }
 

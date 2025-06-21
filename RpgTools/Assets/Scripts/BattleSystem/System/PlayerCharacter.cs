@@ -15,7 +15,7 @@ public class PlayerCharacter : Character
     {
     }
 
-    public void AddEnergyListener(Action action)
+    public void SetEnergyListener(Action action)
     {
         onEnergyChange = action;
     }
@@ -43,6 +43,7 @@ public class PlayerCharacter : Character
 
     public void BaseAttack(Character target)
     {
+        _current = new AttackScriptableObject();
         if (_currentStats[CharacterStatsEnum.Energy] != GetCharacterData().Energy) 
         {
             int newEnergy = _currentStats[CharacterStatsEnum.Energy] + restoreEnergyValue;
@@ -65,6 +66,7 @@ public class PlayerCharacter : Character
         {
             if (index < 0)
             {
+                _current = null;
                 return;
             }
             List<Character> list = new List<Character>();
@@ -79,6 +81,7 @@ public class PlayerCharacter : Character
         {
             if (index < 0)
             {
+                _current = null;
                 return;
             }
             List<Character> list = new List<Character>();
@@ -90,6 +93,14 @@ public class PlayerCharacter : Character
     public override void SetCurrentStatValue(CharacterStatsEnum stat, int value)
     {
         base.SetCurrentStatValue(stat, value);
+        if (stat == CharacterStatsEnum.Health && IsDead()) return;
         if (stat == CharacterStatsEnum.Energy && onEnergyChange != null) onEnergyChange();
+    }
+
+    public void Revive()
+    {
+        if (!_dead) return;
+        _dead = false;
+        _currentStats[CharacterStatsEnum.Health] = 1;
     }
 }

@@ -12,7 +12,10 @@ public class BattleManager : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject battleUI;  
+    private GameObject battleUI;
+
+    [SerializeField]
+    private Image backgroundImage;
     
 
     [SerializeField]
@@ -107,6 +110,16 @@ public class BattleManager : MonoBehaviour
         battleMusic = music;
     }
 
+    public void SetBattleMusic(string name)
+    {
+        battleMusic = Resources.Load<AudioClip>("Music/" + name); ;
+    }
+
+    public void ChangeBackground(string name)
+    {
+        backgroundImage.sprite = Resources.Load<Sprite>($"Images/{name}");
+    }
+
     public void LoadBattle(EncounterScriptableObject encounter, List<PlayerCharacter> playerlist, Action onLoaded=null)
     {
         MusicManager.Instance.PlayMusic(battleMusic);
@@ -178,6 +191,7 @@ public class BattleManager : MonoBehaviour
         foreach (var player in _playerList) 
         {
             player.ClearBattleListeners();
+            player.Revive();
         }
         _playerTurnQueue.Clear();
         _enemyTurnQueue.Clear();
@@ -189,9 +203,11 @@ public class BattleManager : MonoBehaviour
         if (win)
         {
             if (OnBattleWin != null) OnBattleWin.Invoke();
+            OnBattleWin = null;
         }
         else
         {
+            Debug.Log("Game Over");
             GameOverManager.Instance.ShowGameOverScreen();
         }
     }
@@ -364,6 +380,7 @@ public class BattleManager : MonoBehaviour
         if (_playerTurnQueue.Count == 0) return;
 
         PlayerCharacter player = _playerTurnQueue.Dequeue();
+        player.SetCurrentAction(null);
         if (!player.CanStartTurn())
         {
             string infoMessage = $"{player.GetCharacterData().Name} odpoczywa";

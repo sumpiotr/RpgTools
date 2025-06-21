@@ -73,6 +73,11 @@ public class Enemy : Character
             effectChance = GetMultipliedValue(effectChance, resistanceEffectChanceMultiplier);
             if (_onResistanceHitted != null) _onResistanceHitted();
         }
+        else if (_enemyData.immunities.Contains(damageType))
+        {
+            attackDamage = 0;
+            effectChance = 0;
+        }
         base.TakeDamage(attackDamage, damageType, effectChance);
     }
 

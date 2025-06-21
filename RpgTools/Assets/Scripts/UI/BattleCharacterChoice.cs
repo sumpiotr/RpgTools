@@ -17,10 +17,11 @@ public class BattleCharacterChoice : BaseCharacterMenuChoice
 
     private Dictionary<DamageTypeEnum, GameObject> effects; 
 
-    private float CurrentInitiativeValue;
+    private float CurrentInitiativeValue = 0;
 
     public void UpdateInitiative(float newValue)
     {
+        if (_characterData.Speed == 0) return;
        CurrentInitiativeValue += newValue;
        if(CurrentInitiativeValue > _characterData.Speed)CurrentInitiativeValue = 0;
        initiativeSlider.value = CurrentInitiativeValue / _characterData.Speed;
@@ -29,11 +30,9 @@ public class BattleCharacterChoice : BaseCharacterMenuChoice
     public override void LoadData(CharacterChoiceData data)
     {
         base.LoadData(data);
-
         effects = new Dictionary<DamageTypeEnum, GameObject>();
-
         HideEffects();
-
+        CurrentInitiativeValue = 0;
     }
 
     private void HideEffects()
