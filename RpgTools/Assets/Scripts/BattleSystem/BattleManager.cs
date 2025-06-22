@@ -120,6 +120,11 @@ public class BattleManager : MonoBehaviour
         backgroundImage.sprite = Resources.Load<Sprite>($"Images/{name}");
     }
 
+    public void ChangeBackground(Sprite sprite)
+    {
+        backgroundImage.sprite = sprite;
+    }
+
     public void LoadBattle(EncounterScriptableObject encounter, List<PlayerCharacter> playerlist, Action onLoaded=null)
     {
         MusicManager.Instance.PlayMusic(battleMusic);
@@ -203,13 +208,13 @@ public class BattleManager : MonoBehaviour
         if (win)
         {
             if (OnBattleWin != null) OnBattleWin.Invoke();
-            OnBattleWin = null;
         }
         else
         {
             Debug.Log("Game Over");
             GameOverManager.Instance.ShowGameOverScreen();
         }
+        OnBattleWin = null;
     }
 
     private void SetCharactersListeners()

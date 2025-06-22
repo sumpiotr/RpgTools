@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RandomEncountersZone : MonoBehaviour
 {
@@ -9,6 +10,11 @@ public class RandomEncountersZone : MonoBehaviour
 
     [SerializeField]
     private float maxEncounterWaitTime;
+
+    [SerializeField]
+    private Sprite battleBackground;
+    [SerializeField]
+    private AudioClip battleMusic;
 
     [SerializeField]
     private List<EncounterScriptableObject> encounters;
@@ -39,7 +45,14 @@ public class RandomEncountersZone : MonoBehaviour
         if(counter >= waitTime)
         {
             counter = 0;
-            BattleManager.Instance.LoadBattle(GetRandomEncounter());
+            StartEncounter();
         }
+    }
+
+    private void StartEncounter()
+    {
+        BattleManager.Instance.ChangeBackground(battleBackground);
+        BattleManager.Instance.SetBattleMusic(battleMusic);
+        BattleManager.Instance.LoadBattle(GetRandomEncounter());
     }
 }
