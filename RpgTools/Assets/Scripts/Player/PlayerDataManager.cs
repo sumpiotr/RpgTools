@@ -55,7 +55,7 @@ public class PlayerDataManager : MonoBehaviour
 
     private void SetupPlayer(int index)
     {
-        _activePlayers.Add(_players[index]);
+        //_activePlayers.Add(_players[index]);
         PlayerMenuManager.Instance.SetPlayerListeners(_players[index], index, _activePlayers.IndexOf(_players[index]));
     }
 

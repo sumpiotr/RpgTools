@@ -9,14 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54f92211071a2c4c9e5f8c529e3fd12, type: 3}
-  m_Name: PotionAction
+  m_Script: {fileID: 11500000, guid: 04ace8d43974aaf40b083815393cf89f, type: 3}
+  m_Name: SmallKeyB
   m_EditorClassIdentifier: 
-  Name: Mikstura
-  Description: "Przywraca 20 punkt\xF3w \u017Cycia"
-  Cost: 0
-  Target: 0
-  TargetTypeEnum: 2
-  Stat: 0
-  Amount: 25
-  Duration: 1
+  Name: "Ma\u0142y klucz B"
+  Description: "Ma\u0142y klucz"
+  Type: 0
+  Message: "Z pewno\u015Bci\u0105 otwiera jakie\u015B drzwi"

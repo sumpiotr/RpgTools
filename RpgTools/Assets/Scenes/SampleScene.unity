@@ -5299,7 +5299,7 @@ MonoBehaviour:
   _changeSceneEvent: {fileID: 11400000, guid: ea1dfb26c920c4d4581a82be6ea158b9, type: 2}
   playerCollider: {fileID: 2147342002}
   _startScene: {fileID: 102900000, guid: e99ba3f039e01564fbbed5ff9d1ee18f, type: 3}
-  _debuggingScene: {fileID: 102900000, guid: 6a87d25a4d1cd9d49bb55e811ceb4c5c, type: 3}
+  _debuggingScene: {fileID: 102900000, guid: f21328a40b1c0b340b847205b1c71cd2, type: 3}
   _startDialog: {fileID: 4900000, guid: 12ba505d093692a43a2472cf91495e4a, type: 3}
   tutorialEncounter: {fileID: 11400000, guid: 5a7470f551139274aab8b92b02b31815, type: 2}
   tutorialAliceData: {fileID: 11400000, guid: 3c34a5d50494f9c41b5b7d20896c553b, type: 2}

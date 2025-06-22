@@ -5882,6 +5882,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1471602120}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 583533194}
         m_TargetAssemblyTypeName: DialogInvoker, Assembly-CSharp
         m_MethodName: InvokeDialog
@@ -13564,7 +13576,7 @@ Transform:
   m_GameObject: {fileID: 1471602120}
   serializedVersion: 2
   m_LocalRotation: {x: 0.017667796, y: -0.20804846, z: 0.0037586289, w: 0.97795177}
-  m_LocalPosition: {x: 2.08, y: -18.98, z: -0.02}
+  m_LocalPosition: {x: 2.08, y: -18.98, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
