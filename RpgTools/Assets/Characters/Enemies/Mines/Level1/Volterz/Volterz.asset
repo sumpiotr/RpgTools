@@ -28,5 +28,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 64501377a9a4471418fdb93026fb38ba, type: 2}
   - {fileID: 11400000, guid: 68849dc61c10a31499aa0f514d8ede71, type: 2}
   weaknesses: 
-  resistances: 
+  resistances: 05000000
   immunities: 

@@ -231,8 +231,8 @@ public class Character
     public bool UpdateInitiative(float val)
     {
         _initiative += val;
-        int speed = GetCurrentStatValue(CharacterStatsEnum.Speed);
-        if (_effects.Contains(DamageTypeEnum.Ice)) speed = speed + freezeMultiplier;
+        int speed = _characterData.Speed;
+        //if (_effects.Contains(DamageTypeEnum.Ice)) speed = speed + freezeMultiplier;
         return _initiative >= speed;
     }
 

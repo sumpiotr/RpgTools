@@ -92,7 +92,6 @@ public class BattleManager : MonoBehaviour
             playerTurnManager.EnableMenu();
             onMessageEnded();
         };
-
         DialogManager.Instance.ShowSimpleMessage(message, onMessageEnd);
     }
 
@@ -124,6 +123,11 @@ public class BattleManager : MonoBehaviour
     public void ChangeBackground(Sprite sprite)
     {
         backgroundImage.sprite = sprite;
+    }
+
+    public List<PlayerCharacter> GetPlayers()
+    {
+        return _playerList;
     }
 
     public void LoadBattle(EncounterScriptableObject encounter, List<PlayerCharacter> playerlist, Action onLoaded=null)
@@ -490,6 +494,7 @@ public class BattleManager : MonoBehaviour
     {
         if (used)
         {
+            InputManager.Instance.ChangeMapping(InputMapEnum.Battle);
             EndPlayerTurn(player);
         }
         else

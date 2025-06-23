@@ -98,7 +98,11 @@ public class InventoryManager : MonoBehaviour
         }
         if(item.GetType() == typeof(MessageItemScriptableObject))
         {
-            DialogManager.Instance.ShowSimpleMessage(((MessageItemScriptableObject)item).Message);
+            DialogManager.Instance.ShowSimpleMessage(((MessageItemScriptableObject)item).Message, () =>
+            {
+                if (PlayerMenuManager.Instance.InBattle()) onItemUsed(true);
+            });
+
         }
         else if(item.GetType() == typeof(ActionItemScriptableObject))
         {
@@ -119,18 +123,20 @@ public class InventoryManager : MonoBehaviour
             if (!PlayerMenuManager.Instance.InBattle()) InventoryUIManager.Instance.ShowInventory(onItemUsed);
             return;
         }
-        PlayerCharacter choosen =  PlayerMenuManager.Instance.InBattle() ? PlayerDataManager.Instance.GetActivePlayers()[targetIndex] :  PlayerDataManager.Instance.GetPlayers()[targetIndex];
+        PlayerCharacter choosen =  PlayerMenuManager.Instance.InBattle() ? BattleManager.Instance.GetPlayers()[targetIndex] :  PlayerDataManager.Instance.GetPlayers()[targetIndex];
         List<Character> list = new List<Character>();
         list.Add(choosen);
         choosen.ResolveAction(item.Action, list);
         UseUpItem(item);
-        onItemUsed(true);
+
         if (PlayerMenuManager.Instance.InBattle())
         {
             PlayerMenuManager.Instance.CloseMenu();
+            onItemUsed(true);
         }
         else
         {
+            onItemUsed(true);
             if ((_items.ContainsKey(item)))
             {
                 PlayerMenuManager.Instance.SetTitle($"{item.name} x{_items[item]}");
