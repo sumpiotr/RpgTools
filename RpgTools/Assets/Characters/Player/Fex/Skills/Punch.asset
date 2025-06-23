@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6fa3f1cd6b95d45b95b4eadf6156cc, type: 3}
   m_Name: Punch
   m_EditorClassIdentifier: 
-  Name: "Cios pi\u0119\u015Bci\u0105"
-  Description: "Nazwa m\xF3wi sama za siebie. Ma\u0142a szansa na og\u0142uszenie
-    przeciwnika"
-  Cost: 1
+  Name: "Og\u0142uszaj\u0105cy cios"
+  Description: "Przywala przeciwnikowi metalow\u0105 r\u0119k\u0105. Szansa na og\u0142uszenie"
+  Cost: 4
   Target: 1
   TargetTypeEnum: 0
   DamageType: 1
-  attackModifier: 1
+  attackModifier: 1.5
   critModifier: 1
-  effectChance: 5
+  effectChance: 20

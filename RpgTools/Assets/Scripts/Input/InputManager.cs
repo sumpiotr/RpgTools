@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour
 
     private void Start()
     {
-       
+       ChangeMapping(InputMapEnum.UI);
     }
 
     public void ChangeMapping(InputMapEnum inputMap)
@@ -44,6 +44,9 @@ public class InputManager : MonoBehaviour
                 break;
             case InputMapEnum.UI:
                 name = "UI";
+                break;
+            case InputMapEnum.Block:
+                name = "Block";
                 break;
             default:
                 name = "Player";

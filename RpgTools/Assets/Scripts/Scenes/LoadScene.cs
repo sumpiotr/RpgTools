@@ -1,29 +1,30 @@
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
     [SerializeField]
-    private SceneAsset scene;
+    private string scene;
 
     [SerializeField]
     private Vector2 enterPosition;
+
+    [SerializeField]
+    private Vector2 direction = Vector2.zero;
 
     private LoadSceneEventScriptableObject _changeSceneEvent;
 
     private SceneLoadData _loadData;
 
+
     private void Start()
     {
         _changeSceneEvent = Resources.Load<LoadSceneEventScriptableObject>("Events/LoadScene");
-        _loadData = new SceneLoadData(enterPosition, scene.name, Vector2.zero);
+        _loadData = new SceneLoadData(enterPosition, scene, Vector2.zero);
     }
 
     public void LoadNewScene(Vector2 exitPosition)
     {
-        _loadData.exitPosition = exitPosition;
+        _loadData.exitPosition = direction;
         _changeSceneEvent.CallEvent(_loadData);
     }
 }

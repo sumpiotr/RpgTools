@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEditor.Rendering;
 using System;
 
 public class DialogManager : MonoBehaviour

@@ -85,4 +85,41 @@ public class BackgroundPanelManager : MonoBehaviour
 
         onFadeOut();
     }
+
+    public IEnumerator FadeIn(Action onFadeIn)
+    {
+        float t = 0f;
+        Color c = fadeImage.color;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            c.a = Mathf.Lerp(0f, 1f, t / fadeDuration); ;
+            fadeImage.color = c;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        c.a = 1;
+        fadeImage.color = c;
+
+        onFadeIn();
+    }
+
+    public IEnumerator FadeOut(Action onFadeOut)
+    {
+
+        float t = 0f;
+        Color c = fadeImage.color;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            c.a = Mathf.Lerp(1f, 0f, t / fadeDuration);
+            fadeImage.color = c;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        c.a = 0;
+        fadeImage.color = c;
+
+        yield return new WaitForSeconds(fadeDuration);
+
+        onFadeOut();
+    }
 }

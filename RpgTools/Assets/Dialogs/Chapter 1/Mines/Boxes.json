@@ -1,0 +1,1 @@
+﻿{"inkVersion":21,"root":[["#","^using AddItems","/#","ev","str","^Potion","/str",5,{"x()":"AddItems","exArgs":2},"pop","/ev","\n","^Pudełka...","\n","^Znalazłeś 5 mikstur!","\n",["done",{"#f":5,"#n":"g-0"}],null],"done",{"#f":1}],"listDefs":{}}

@@ -1549,6 +1549,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Block",
+            "id": "70d85722-f4f1-4fa1-b282-c81d8e12a873",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "8f41c53c-2f67-40a3-a823-9f64300f8064",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "62a2eddb-061e-415f-8784-801570a5fd57",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

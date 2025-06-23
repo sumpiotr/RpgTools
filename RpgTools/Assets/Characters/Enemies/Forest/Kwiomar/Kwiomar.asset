@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Kwiomar
   Sprite: {fileID: 21300000, guid: cc95bbe849955d94592d3129ebde45df, type: 3}
-  Health: 25
+  BattleSprite: {fileID: 0}
+  Health: 35
   Energy: 0
   Attack: 5
   Defense: 2
@@ -27,3 +28,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ca27c4acec2585e499dca89ed5099e7e, type: 2}
   weaknesses: 
   resistances: 
+  immunities: 

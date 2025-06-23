@@ -1,0 +1,1 @@
+Zdobyłeś klucz do windy!

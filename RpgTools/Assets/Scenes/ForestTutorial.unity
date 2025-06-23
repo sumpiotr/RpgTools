@@ -2983,8 +2983,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5dbb527a25f9a4db4495fcff793d7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scene: {fileID: 102900000, guid: 6a87d25a4d1cd9d49bb55e811ceb4c5c, type: 3}
+  scene: Forest
   enterPosition: {x: 0, y: 0}
+  direction: {x: 0, y: 0}
 --- !u!61 &534955321
 BoxCollider2D:
   m_ObjectHideFlags: 0

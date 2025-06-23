@@ -51,4 +51,5 @@ EXTERNAL AddItems(name, count)
 ===GateOpened===
 Droga wolna, skoro szef pozwolił ci wyjść to nie będę cię zatrzymywał
 Uważaj na siebie!
+~PlayCutscene("GuardCutscene")
 ->END

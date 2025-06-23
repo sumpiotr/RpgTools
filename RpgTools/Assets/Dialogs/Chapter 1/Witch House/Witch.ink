@@ -45,7 +45,7 @@ Jeśli byłbyś na tyle miły i pomógł mi je pozbierać to z pewnością sowic
 Tyhyhyhyhy
 Wiesz co?
 Masz tutaj coś na drogę za to że jesteś taki miły
-~AddItems("Potion", 1)
+~AddItems("Potion", 10)
 ~SetPortrait("")
 Otrzymałeś 10 mikstur! Możesz ich użyć aby się podleczyć!
 ~SetPortrait("Witch")

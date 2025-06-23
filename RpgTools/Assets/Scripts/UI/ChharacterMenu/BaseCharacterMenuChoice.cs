@@ -22,7 +22,7 @@ public class BaseCharacterMenuChoice : BaseChoiceMenu<CharacterChoiceData>
         [SerializeField]
         private GameObject choiceContainer;
 
-        private int CurrentHealth;
+        protected int CurrentHealth;
         private int CurrentEnergy;
 
         public virtual void UpdateHealth(int newValue)

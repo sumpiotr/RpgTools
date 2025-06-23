@@ -11,6 +11,7 @@ public class PlayerCharacter : Character
     private Action onEnergyChange;
 
 
+
     public PlayerCharacter(CharacterScriptableObject characterData) : base(characterData)
     {
     }
@@ -27,6 +28,9 @@ public class PlayerCharacter : Character
     public void Guard()
     {
         _guarding = true;
+        int newEnergy = _currentStats[CharacterStatsEnum.Energy] + restoreEnergyValue;
+        _currentStats[CharacterStatsEnum.Energy] = Math.Min(newEnergy, GetCharacterData().Energy);
+        if (onEnergyChange != null) onEnergyChange();
     }
 
     public override void TakeDamage(int attackDamage, DamageTypeEnum damageType, int effectChance)

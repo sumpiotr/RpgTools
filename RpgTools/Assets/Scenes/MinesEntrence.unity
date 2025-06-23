@@ -5870,9 +5870,9 @@ MonoBehaviour:
   interactionEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1514992605}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
+      - m_Target: {fileID: 1514992608}
+        m_TargetAssemblyTypeName: StateObject, Assembly-CSharp
+        m_MethodName: SetState
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5882,9 +5882,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1471602120}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
+      - m_Target: {fileID: 1471602123}
+        m_TargetAssemblyTypeName: StateObject, Assembly-CSharp
+        m_MethodName: SetState
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13560,6 +13560,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1471602121}
   - component: {fileID: 1471602122}
+  - component: {fileID: 1471602123}
   m_Layer: 0
   m_Name: goodWilkur
   m_TagString: Untagged
@@ -13637,6 +13638,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1471602123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471602120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee815907b61fcf84ca699d6db227bed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1473022953
 GameObject:
   m_ObjectHideFlags: 0
@@ -13952,6 +13965,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1514992606}
   - component: {fileID: 1514992607}
+  - component: {fileID: 1514992608}
   m_Layer: 0
   m_Name: evilWilkur
   m_TagString: Untagged
@@ -14029,6 +14043,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1514992608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514992605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee815907b61fcf84ca699d6db227bed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1519828587
 GameObject:
   m_ObjectHideFlags: 0

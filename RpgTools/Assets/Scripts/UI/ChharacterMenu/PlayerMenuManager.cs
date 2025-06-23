@@ -94,7 +94,7 @@ public class PlayerMenuManager : MonoBehaviour
         characterMenu.gameObject.SetActive(true);
         characterMenu.SetTitle(title);
         characterMenu.Unfocus();
-        List<PlayerCharacter> players = PlayerDataManager.Instance.GetActivePlayers();
+        List<PlayerCharacter> players = PlayerDataManager.Instance.GetPlayers();
         List<CharacterChoiceData> choices = new List<CharacterChoiceData>();
         foreach (PlayerCharacter player in players) 
         {

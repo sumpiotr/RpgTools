@@ -3,9 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
@@ -35,6 +33,9 @@ public class BattleManager : MonoBehaviour
 
     private Queue<EffectInfo> _newEffectsInfo;
     private Queue<EffectInfo> _removedEffectsInfo;
+
+    bool _weaknesHitted = false;
+    bool _resistanceHitted = false;
 
     private Queue<PlayerCharacter> _playerTurnQueue;
     private Queue<Enemy> _enemyTurnQueue;
@@ -195,7 +196,7 @@ public class BattleManager : MonoBehaviour
         battleUI.SetActive(false);
         foreach (var player in _playerList) 
         {
-            player.ClearBattleListeners();
+            player.ClearBattle();
             player.Revive();
         }
         _playerTurnQueue.Clear();
@@ -270,6 +271,16 @@ public class BattleManager : MonoBehaviour
                 _activeEnemyList.RemoveAt(index);
                 SetEnemyListeners();
                 characterDisplayManager.LoadEnemies(_activeEnemyList);
+            });
+
+            _activeEnemyList[i].SetOnWeaknessHitted(() =>
+            {
+                _weaknesHitted = true;
+            });
+
+            _activeEnemyList[i].SetOnResistanceHitted(() =>
+            {
+                _resistanceHitted = true;
             });
         }
     }
@@ -481,11 +492,33 @@ public class BattleManager : MonoBehaviour
         {
             EndPlayerTurn(player);
         }
-        else LoadPlayerMenu(player);
+        else
+        {
+            InputManager.Instance.ChangeMapping(InputMapEnum.Battle);
+            LoadPlayerMenu(player);
+        }
     }
 
     private void EndPlayerTurn(PlayerCharacter player) 
     {
+        if(_resistanceHitted && _weaknesHitted)
+        {
+            _resistanceHitted = false;
+            _weaknesHitted = false;
+        }
+
+        if (_weaknesHitted || _resistanceHitted) 
+        {
+            string message = _weaknesHitted ? "Ten atak jest super efektywny!" : "Ten atak nie jest zbyt efektywny :(";
+            _weaknesHitted = false;
+            _resistanceHitted = false;
+            DisplayBattleMessage(message, () =>
+            {
+                EndPlayerTurn(player);
+            });
+            return;
+        }
+
         if(player.GetInitiative() != 0)player.EndTurn();
         if(OnPlayerTurnEnd != null)OnPlayerTurnEnd.Invoke(player);
         else ResolveTurns();

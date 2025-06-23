@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -22,7 +21,6 @@ public class InventoryManager : MonoBehaviour
 
     private void Start()
     {
-        AddItem("Potion");
     }
 
     public void AddItem(string item)
@@ -121,7 +119,7 @@ public class InventoryManager : MonoBehaviour
             if (!PlayerMenuManager.Instance.InBattle()) InventoryUIManager.Instance.ShowInventory(onItemUsed);
             return;
         }
-        PlayerCharacter choosen = PlayerDataManager.Instance.GetActivePlayers()[targetIndex];
+        PlayerCharacter choosen =  PlayerMenuManager.Instance.InBattle() ? PlayerDataManager.Instance.GetActivePlayers()[targetIndex] :  PlayerDataManager.Instance.GetPlayers()[targetIndex];
         List<Character> list = new List<Character>();
         list.Add(choosen);
         choosen.ResolveAction(item.Action, list);

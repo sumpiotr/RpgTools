@@ -84,14 +84,14 @@ public class Enemy : Character
     protected override void ChooseTargetAlly(ActionBaseScriptableObject action, List<Character> allies)
     {
         List<Character> list = new List<Character>();
-        list.Add(allies[Random.Range(0, allies.Count - 1)]);
+        list.Add(allies[Random.Range(0, allies.Count)]);
         ResolveAction(action, list);
     }
 
     protected override void ChooseTargetEnemy(ActionBaseScriptableObject action, List<Character> enemies)
     {
         List<Character> list = new List<Character>();
-        list.Add(enemies[Random.Range(0, enemies.Count - 1)]);
+        list.Add(enemies[Random.Range(0, enemies.Count)]);
         ResolveAction(action, list);
     }
 

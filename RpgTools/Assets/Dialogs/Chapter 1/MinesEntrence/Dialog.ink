@@ -49,6 +49,7 @@ Czas zdaje się jakby spowolnił
 [Wzmacnianie wydajności organizmu ]
 [Przekierowywanie energii do protezy]
 [Rozpoczynanie procedurry obronnej]
+~SetPortrait("")
 ~ShowBackground("attackScene")
 !
 ~ShowBackground("blue")
@@ -70,8 +71,8 @@ Nie jesteś do końca pewien co się wydarzyło
 Ale czujesz pulsującą w sobie energie
 Zdaje ci się że jesteś o wiele silniejszy i szybszy niż wcześniej i jeśli zaszłaby taka potrzeba mógłbyś odtworzyć ten atak
 ~SetPortrait("WAP")
-Odblokowano umiejętność Ostrze Energi! 
-Ostrze Energi: typ ataku: Energia, Efekt: pomija obronę przeciwnika, skuteczne przeciwko: metal
+[Odblokowano umiejętność Ostrze Energi!]
+[Ostrze Energi: typ ataku: Energia, Efekt: pomija obronę przeciwnika, skuteczne przeciwko: metal]
 ~SetPortrait("")
 Jest tylko jeden sposób żeby to wszystko przetestować!
 ~SetPortrait("Fex")

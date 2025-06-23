@@ -18,5 +18,5 @@ MonoBehaviour:
   Target: 0
   TargetTypeEnum: 2
   Stat: 3
-  Amount: 1
+  Amount: -1
   Duration: 2

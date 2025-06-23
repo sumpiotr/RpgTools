@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MinesEntrence.unity
     guid: 327a6349a7c7f504fba47d1febaa71ef
   - enabled: 1
+    path: Assets/Scenes/BossHouseBeforeMine.unity
+    guid: 9cb8c2599eb88134caa872c062032331
+  - enabled: 1
     path: Assets/Scenes/Mines.unity
     guid: f21328a40b1c0b340b847205b1c71cd2
   m_configObjects:

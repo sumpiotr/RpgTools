@@ -22,6 +22,12 @@ public class RandomEncountersZone : MonoBehaviour
     private float waitTime;
     private float counter;
 
+    private void Start()
+    {
+        waitTime = GetWaitTime();
+        counter = 0;
+    }
+
     private float GetWaitTime()
     {
         return Random.Range(minEncounterWaitTime, maxEncounterWaitTime);
@@ -34,8 +40,7 @@ public class RandomEncountersZone : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        waitTime = GetWaitTime();
-        counter = 0;
+
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -44,7 +49,7 @@ public class RandomEncountersZone : MonoBehaviour
         counter += Time.deltaTime;
         if(counter >= waitTime)
         {
-            counter = 0;
+            Start();
             StartEncounter();
         }
     }

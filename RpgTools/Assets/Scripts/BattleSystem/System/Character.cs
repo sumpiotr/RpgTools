@@ -36,7 +36,7 @@ public class Character
     #region Effects consts
 
     const float criticalDamageMultiplier = 2f;
-    const float freezeMultiplier = 1.5f;
+    const int freezeMultiplier = 0;
     const float fireMultiplier = 0.1f;
     const int electricityChance = 30;
 
@@ -110,12 +110,30 @@ public class Character
         _onEffectRemoved = onEffectRemoved;
     }
 
+    public void ClearBattle()
+    {
+        _initiative = 0;
+        ClearBattleListeners();
+        foreach(CharacterStatsEnum boof in _boofs)
+        {
+            _boofsCounter[boof] = 0;
+            _boofsValues[boof] = 0;
+        }
+        _boofs.Clear();
+
+        foreach(DamageTypeEnum effect in _effects)
+        {
+            _effectsCounter[effect] = 0;
+        }
+        _effects.Clear();
+    }
 
     public void ClearBattleListeners()
     {
         _onDeath = null;
         _onGainEffect = null;
         _onEffectRemoved = null;
+        _onActionResolved = null;
     }
 
     public virtual void TakeDamage(int attackDamage, DamageTypeEnum damageType, int effectChance)
@@ -142,12 +160,14 @@ public class Character
 
     public void Restore()
     {
+        _dead = false;
         SetCurrentStatValue(CharacterStatsEnum.Health, _characterData.Health);
         SetCurrentStatValue(CharacterStatsEnum.Energy, _characterData.Energy);
     }
 
     private void Dead()
     {
+        _initiative = 0;
         _currentStats[CharacterStatsEnum.Health] = 0;
         _onHealthChange.Invoke();
         foreach (DamageTypeEnum value in Enum.GetValues(typeof(DamageTypeEnum)))
@@ -171,6 +191,10 @@ public class Character
         {
             _currentStats[type] += amount;
             if (_currentStats[type] > _characterData.Health) _currentStats[type] = _characterData.Health;
+            if (_dead) { 
+                _dead = false;
+                _initiative = 0;
+            }
             _onHealthChange();
         }
         else if (type == CharacterStatsEnum.Energy)
@@ -208,7 +232,7 @@ public class Character
     {
         _initiative += val;
         int speed = GetCurrentStatValue(CharacterStatsEnum.Speed);
-        if (_effects.Contains(DamageTypeEnum.Ice)) speed = GetMultipliedValue(speed, freezeMultiplier);
+        if (_effects.Contains(DamageTypeEnum.Ice)) speed = speed + freezeMultiplier;
         return _initiative >= speed;
     }
 
@@ -231,7 +255,6 @@ public class Character
 
     public void EndTurn()
     {
-        Debug.Log("End turn " + _characterData.Name);
         _initiative = 0;
         CheckBoofs();
         CheckEffects();
@@ -242,7 +265,6 @@ public class Character
         List<CharacterStatsEnum> toRemove = new List<CharacterStatsEnum>();
         foreach (CharacterStatsEnum type in _boofs) 
         {
-            Debug.Log(_boofsCounter[type]);
             _boofsCounter[type] -= 1;
             if (_boofsCounter[type] <= 0)
             {
@@ -385,7 +407,12 @@ public class Character
         }
 
         EndTurn();
-        if(_onActionResolved != null)_onActionResolved.Invoke();
+
+        if (_onActionResolved != null) { 
+            Action temp = _onActionResolved;
+            _onActionResolved = null;
+            temp.Invoke(); 
+        }
     }
 
 

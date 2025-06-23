@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Mruk
   Sprite: {fileID: 21300000, guid: 2e99a6d711727f74a9f22ad6fc1b72c7, type: 3}
-  Health: 20
+  BattleSprite: {fileID: 0}
+  Health: 40
   Energy: 0
   Attack: 7
   Defense: 4
@@ -27,3 +28,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d1c39e2e9b5a45b43864c0be9ae6b212, type: 2}
   weaknesses: 
   resistances: 
+  immunities: 

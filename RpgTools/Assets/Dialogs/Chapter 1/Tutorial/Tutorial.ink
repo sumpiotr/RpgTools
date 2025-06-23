@@ -87,7 +87,7 @@ Widzisz wcale nie było tak źle
 ~SetPortrait("Fex")
 Nie było tak źle???
 Kompletnie ich zniszczyłaś 
-Dzisiejsze polowanie pójdzie jak spłatka
+Dzisiejsze polowanie pójdzie jak z płatka
 ~SetPortrait("")
 !
 ~ShowBackground("meteor")

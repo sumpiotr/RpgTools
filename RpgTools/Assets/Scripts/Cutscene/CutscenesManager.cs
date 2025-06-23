@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -18,10 +19,7 @@ public class CutscenesManager : MonoBehaviour
     private BoxCollider2D playerCollider;
 
     [SerializeField]
-    private SceneAsset _startScene;
-
-    [SerializeField]
-    private SceneAsset _debuggingScene;
+    private string _startScene;
 
     [SerializeField]
     private TextAsset _startDialog;
@@ -45,6 +43,20 @@ public class CutscenesManager : MonoBehaviour
     [SerializeField]
     private TextAsset metalDogEncounterDialog;
 
+    [Header("BeforeMinesTalk")]
+    [SerializeField]
+    private TextAsset beforeMinesTalkDialog;
+    [SerializeField]
+    private string bossHouseBeforeMines;
+    [SerializeField]
+    private string mines;
+
+    [Header("Elevator")]
+    [SerializeField]
+    AudioClip endMusic;
+    [SerializeField]
+    GameObject endScreen;
+
     private void Awake()
     {
         if(Instance == null)Instance = this;
@@ -55,14 +67,14 @@ public class CutscenesManager : MonoBehaviour
     {
         //StartCutscene();
         //new Vector2(89, 28)
-        _changeSceneEvent.CallEvent(new SceneLoadData(new Vector2(0, 0), _debuggingScene.name, Vector2.zero));
+        //_changeSceneEvent.CallEvent(new SceneLoadData(new Vector2(0, 0), _debuggingScene.name, Vector2.zero));
     }
 
     private void StartCutscene()
     {
         InputManager.Instance.ChangeMapping(InputMapEnum.Dialog);
         playerCollider.enabled = false;
-        _changeSceneEvent.CallEvent(new SceneLoadData(new Vector2(4.35f, 1.16f), _startScene.name, Vector2.zero));
+        SceneLoadManager.Instance.LoadScene(new SceneLoadData(new Vector2(4.35f, 1.16f), _startScene, Vector2.zero));
         DialogManager.Instance.StartDialog(_startDialog.text, () =>
         {
             playerCollider.gameObject.transform.position = new Vector3(3.15f, 1, 0);
@@ -73,7 +85,11 @@ public class CutscenesManager : MonoBehaviour
 
     public void PlayCutscene(string name)
     {
-        if(name == "GuardCutscene")
+        if(name == "Start")
+        {
+            StartCutscene();
+        }
+        else if(name == "GuardCutscene")
         {
             GuardCutscene();
         }
@@ -96,6 +112,10 @@ public class CutscenesManager : MonoBehaviour
         else if(name == "MetalDogTame")
         {
             MetalDogTame();
+        }
+        else if(name == "Elevator1")
+        {
+            ElevatorCutscene();
         }
     }
 
@@ -130,7 +150,7 @@ public class CutscenesManager : MonoBehaviour
         if (_eventIndex == 0)
         {
             _eventIndex++;
-            //BattleManager.Instance.DisableMainMenuOption("Attack");
+            BattleManager.Instance.DisableMainMenuOption("Attack");
             BattleManager.Instance.DisableMainMenuOption("Guard");
             DialogManager.Instance.StartDialog(tutorialDialog.text, () => { BattleManager.Instance.ResolveTurns(); });
         }
@@ -233,12 +253,32 @@ public class CutscenesManager : MonoBehaviour
     private void MetalDogEncounterEnd()
     {
         MusicManager.Instance.PlayMusic("MinesEntrance");
-        DialogManager.Instance.StartDialog(metalDogEncounterDialog.text);
+        DialogManager.Instance.StartDialog(metalDogEncounterDialog.text, () =>
+        {
+            IEnumerator fade = BackgroundPanelManager.Instance.FadeIn(() =>
+            {
+                SceneLoadManager.Instance.LoadScene(new SceneLoadData(new Vector2(0.7f, -0.7f), bossHouseBeforeMines, Vector2.up));
+                DialogManager.Instance.ShowSimpleMessage("Jakiœ czas póŸniej...", BeforeMinesTalk);
+            });
+            StartCoroutine(fade);
+        });
     }
 
 
 
     #endregion
+
+    private void BeforeMinesTalk()
+    {
+        IEnumerator fadeOut = BackgroundPanelManager.Instance.FadeOut(() => {
+            DialogManager.Instance.StartDialog(beforeMinesTalkDialog.text, () => {
+                SceneLoadManager.Instance.LoadSceneTransition(new SceneLoadData(Vector2.zero, mines, Vector2.zero));
+            });
+        });
+        StartCoroutine(fadeOut);
+
+
+    }
 
     private void MetalDogTame()
     {
@@ -246,4 +286,12 @@ public class CutscenesManager : MonoBehaviour
         if (evil == null) return;
         evil.SetActive(false);
     }
+
+    private void ElevatorCutscene()
+    {
+        InputManager.Instance.ChangeMapping(InputMapEnum.Block);
+        endScreen.SetActive(true);
+        MusicManager.Instance.PlayMusic(endMusic);
+    }
+   
 }

@@ -71,9 +71,16 @@ public class PlayerController : MonoBehaviour
             //_rigidbody2D.linearVelocity = Vector2.zero;
             return;
         }
-        if (Mathf.Abs(movement.y) > Mathf.Abs(movement.x)) 
+        SetDirection(movement);
+        _velocity = _direction*speed;
+    }
+
+    public void SetDirection(Vector2 direction)
+    {
+        if (direction == Vector2.zero) return;
+        if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
         {
-            if(movement.y > 0)
+            if (direction.y > 0)
             {
                 _direction = Vector2.up;
                 _spriteRenderer.sprite = back;
@@ -87,18 +94,17 @@ public class PlayerController : MonoBehaviour
         else
         {
             _spriteRenderer.sprite = side;
-            if (movement.x > 0)
+            if (direction.x > 0)
             {
                 _direction = Vector2.right;
                 transform.localScale = new Vector3(1, 1, 1);
             }
-            else 
+            else
             {
                 _direction = Vector2.left;
                 transform.localScale = new Vector3(-1, 1, 1);
             }
         }
-        _velocity = _direction*speed;
     }
 
     public void Interact(InputAction.CallbackContext context)

@@ -7,5 +7,6 @@ public enum InputMapEnum
     Inventory,
     CharacterSelection,
     UI,
+    Block
 }
 

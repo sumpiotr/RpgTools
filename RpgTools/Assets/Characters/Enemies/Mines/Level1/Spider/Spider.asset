@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa70c1954a138f47afe30f9755a2968, type: 3}
+  m_Name: Spider
+  m_EditorClassIdentifier: 
+  Name: "Paj\u0119czak"
+  Sprite: {fileID: 3873087697204469031, guid: 1f87f871d6d17424098396dc941ffd12, type: 3}
+  BattleSprite: {fileID: 3873087697204469031, guid: 1f87f871d6d17424098396dc941ffd12, type: 3}
+  Health: 20
+  Energy: 0
+  Attack: 8
+  Defense: 0
+  Speed: 2
+  CriticalRate: 0
+  baseAttackType: 3
+  Skills:
+  - {fileID: 11400000, guid: f5375d0c8d8e9374f8c29fc04cfb4a5b, type: 2}
+  - {fileID: 11400000, guid: 70895912d1a3cdd4fbaaf0419ab0fb32, type: 2}
+  weaknesses: 02000000
+  resistances: 
+  immunities: 

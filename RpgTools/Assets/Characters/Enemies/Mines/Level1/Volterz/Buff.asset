@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f54f92211071a2c4c9e5f8c529e3fd12, type: 3}
+  m_Name: Buff
+  m_EditorClassIdentifier: 
+  Name: "Og\u0142uszaj\u0105cy pisk"
+  Description: 
+  Cost: 4
+  Target: 1
+  TargetTypeEnum: 1
+  Stat: 4
+  Amount: -2
+  Duration: 2

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -25,21 +26,33 @@ public class SceneLoadManager : MonoBehaviour
             Destroy(this);
             return;
         }
-        loadSceneEvent.AddEvent(LoadScene);
+        loadSceneEvent.AddEvent(LoadSceneTransition);
         changePlayerPositionEvent.CallEvent(Vector2.zero);
         //SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         //_currentScene = SceneManager.GetSceneByBuildIndex(1).name;
     }
 
 
-    private void LoadScene(SceneLoadData data) 
+    public void LoadScene(SceneLoadData data) 
     {
         if(_currentScene != "")SceneManager.UnloadSceneAsync(_currentScene);
         PlayerController.Instance.UpdatePosition(data.enterPosition);
+        PlayerController.Instance.SetDirection(data.exitPosition);
         _data = data;
         SceneManager.LoadSceneAsync(data.name, LoadSceneMode.Additive);
         //changePlayerPositionEvent.CallEvent(data.enterPosition);
         _currentScene = data.name;
+    }
+
+    public void LoadSceneTransition(SceneLoadData data)
+    {
+        InputMapEnum previous = InputManager.Instance.GetInputMap();
+        InputManager.Instance.ChangeMapping(InputMapEnum.Block);
+        IEnumerator transition =  BackgroundPanelManager.Instance.Transition(() => { 
+            LoadScene(data);
+            InputManager.Instance.ChangeMapping(previous);
+        }, () => {  });
+        StartCoroutine(transition);
     }
 
     public void ReloadScene() {

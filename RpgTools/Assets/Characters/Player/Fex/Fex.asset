@@ -18,7 +18,7 @@ MonoBehaviour:
   Health: 40
   Energy: 12
   Attack: 8
-  Defense: 2
+  Defense: 4
   Speed: 4
   CriticalRate: 15
   baseAttackType: 0
@@ -27,3 +27,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e9f5d3f3b0a27c9419b70e68228bc481, type: 2}
   - {fileID: 11400000, guid: a5de636f8c6365646b15c048886e1ccd, type: 2}
   - {fileID: 11400000, guid: 26d60cbb235388a4cb3ec440335b6a69, type: 2}
+  - {fileID: 11400000, guid: 89685cff48aa1244aba4e0cd4bbc17df, type: 2}
+  - {fileID: 11400000, guid: eb9dc5919a594b649a48957d07d6195b, type: 2}
